@@ -168,6 +168,16 @@ _STATIC_DEFAULTS: Dict = {
     "fx_supported_currencies": ["CAD", "USD", "EUR"],
 }
 
+# These locations are part of the generated demo profile's structure, not
+# user configuration. Persisting their fully resolved values freezes the
+# current physical content-directory name and can make a later demo promotion
+# point back at obsolete content. Personal and explicit external profiles
+# remain free to configure the same keys.
+_DEMO_MANAGED_PATH_KEYS = frozenset({
+    "consolidated_statements",
+    "custom_categories_path",
+})
+
 
 def _default_settings_for_profile(profile_dir: Path) -> Dict:
     """Default settings for `profile_dir`, as if its settings.json didn't
@@ -238,6 +248,11 @@ def load_settings(*, create_missing: bool = True) -> Dict:
       file already exists.
     - If present but corrupted, repairs it in place with that profile's
       defaults (never writes to a different profile).
+    - For the generated demo profile, ignores persisted
+      consolidated_statements/custom_categories_path values, including
+      leftovers written by older versions. Those paths are always recomputed
+      from the current demo directory. Personal and explicit external
+      profiles still honour both settings.
     - Relative paths found in the file are normalized to absolute, anchored
       at the profile dir (base_categories_path is anchored at the
       repository root instead, since the base template is not
@@ -257,12 +272,11 @@ def load_settings(*, create_missing: bool = True) -> Dict:
       relative to it (BUG-03 regression; a
       profile directory can be renamed after its settings.json is first
       written, e.g. during scripts/build_demo_profile.py's atomic
-      promotion). A value a caller (or the /settings form) explicitly
-      writes via save_settings() is a different code path and is always
-      honoured as-is -- this only affects what an auto-write produces
-      from a blank slate.
+      promotion). Explicit saves apply the same omission when the active
+      profile is demo; personal and external profiles remain configurable.
     """
     profile_dir = active_profile_dir()
+    profile_label = active_profile_label()
     settings_path = profile_dir / "settings.json"
     defaults = _default_settings_for_profile(profile_dir)
 
@@ -279,6 +293,12 @@ def load_settings(*, create_missing: bool = True) -> Dict:
             needs_write = True
         data = dict(defaults)
         if isinstance(file_data, dict):
+            if profile_label == "demo":
+                file_data = {
+                    key: value
+                    for key, value in file_data.items()
+                    if key not in _DEMO_MANAGED_PATH_KEYS
+                }
             data.update(file_data)
 
     if data.get("consolidated_statements"):
@@ -308,7 +328,7 @@ def load_settings(*, create_missing: bool = True) -> Dict:
         # the resolved values for this call's caller to use immediately.
         persisted = {
             k: v for k, v in data.items()
-            if k not in ("consolidated_statements", "custom_categories_path")
+            if k not in _DEMO_MANAGED_PATH_KEYS
         }
         settings_path.parent.mkdir(parents=True, exist_ok=True)
         settings_path.write_text(json.dumps(persisted, indent=2))
@@ -332,8 +352,17 @@ def save_settings(settings: Dict) -> None:
     Uses the same profile resolution as load_settings(), so a save always
     lands wherever the next load would read from -- there is no way to
     load from one profile and unknowingly save to another.
+
+    The generated demo profile never persists its two profile-derived path
+    keys. They are recomputed on every load so an atomic demo promotion cannot
+    leave settings pointing at an obsolete physical content directory.
+    Personal and explicit external profiles preserve caller-supplied paths.
     """
     _normalize_fx_settings(settings)
+    persisted = dict(settings)
+    if active_profile_label() == "demo":
+        for key in _DEMO_MANAGED_PATH_KEYS:
+            persisted.pop(key, None)
     path = active_settings_path()
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(settings, indent=2))
+    path.write_text(json.dumps(persisted, indent=2))

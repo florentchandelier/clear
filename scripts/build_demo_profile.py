@@ -345,9 +345,8 @@ def _self_heal_stale_settings(demo_dir: Path) -> None:
     freshly-created settings.json can no longer go stale this way) means a
     build made with the fixed code never needs this. This exists for a
     profile that's already broken -- an older, pre-fix build's leftover
-    settings.json still sitting in someone's `var/demo/`, or a value a
-    user explicitly saved through the `/settings` form while demo mode was
-    active (see the fix plan's Decision D2, not yet addressed).
+    settings.json still sitting in someone's `var/demo/`, including a value
+    saved through the `/settings` form before the form guard was added.
 
     Deletes rather than rewrites in place: the next config.load_settings()
     call regenerates the file correctly on its own (via the same,

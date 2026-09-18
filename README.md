@@ -141,6 +141,10 @@ To switch back to demo mode, delete or rename `personal/settings.json`.
 
 Nothing else changes.
 
+In demo mode, the consolidated-data and custom-category paths are generated
+by `make demo`. The Settings page shows them read-only and never persists them;
+personal and explicit external profiles remain fully configurable.
+
 ---
 
 # Importing financial data

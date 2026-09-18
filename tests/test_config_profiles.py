@@ -167,7 +167,78 @@ def test_save_then_load_symmetry(profiles):
 
     reloaded = config.load_settings()
     assert reloaded["similarity_threshold"] == 42
-    assert json.loads((demo_dir / "settings.json").read_text())["similarity_threshold"] == 42
+    persisted = json.loads((demo_dir / "settings.json").read_text())
+    assert persisted["similarity_threshold"] == 42
+    assert "consolidated_statements" not in persisted
+    assert "custom_categories_path" not in persisted
+
+
+def test_save_settings_never_persists_demo_managed_paths(profiles, tmp_path):
+    """Even a forged caller value must not turn a generated demo path into
+    durable configuration."""
+    _personal_dir, demo_dir = profiles
+    data = config.load_settings()
+    data["consolidated_statements"] = str(tmp_path / "outside-data")
+    data["custom_categories_path"] = str(tmp_path / "outside-categories.json")
+    data["similarity_threshold"] = 41
+
+    config.save_settings(data)
+
+    persisted = json.loads((demo_dir / "settings.json").read_text())
+    assert "consolidated_statements" not in persisted
+    assert "custom_categories_path" not in persisted
+    assert persisted["similarity_threshold"] == 41
+
+    reloaded = config.load_settings()
+    assert reloaded["consolidated_statements"] == str(
+        (demo_dir / "consolidated_statements").resolve()
+    )
+    assert reloaded["custom_categories_path"] == str(
+        (demo_dir / "categories_custom.json").resolve()
+    )
+
+
+def test_legacy_demo_path_overrides_are_ignored_on_load(profiles, tmp_path):
+    """Existing files written by older versions become safe immediately."""
+    _personal_dir, demo_dir = profiles
+    demo_dir.mkdir(parents=True)
+    (demo_dir / "settings.json").write_text(json.dumps({
+        "consolidated_statements": str(tmp_path / "stale-data"),
+        "custom_categories_path": str(tmp_path / "stale-categories.json"),
+        "similarity_threshold": 37,
+    }))
+
+    data = config.load_settings()
+
+    assert data["consolidated_statements"] == str(
+        (demo_dir / "consolidated_statements").resolve()
+    )
+    assert data["custom_categories_path"] == str(
+        (demo_dir / "categories_custom.json").resolve()
+    )
+    assert data["similarity_threshold"] == 37
+
+
+def test_explicit_save_survives_demo_profile_rename_without_stale_paths(
+    profiles, monkeypatch
+):
+    """Save the resolved form values, rename the profile, then confirm both
+    generated paths follow it."""
+    _personal_dir, original = profiles
+    data = config.load_settings()
+    config.save_settings(data)
+
+    renamed = original.with_name("demo-promoted")
+    os.rename(original, renamed)
+    monkeypatch.setattr(config, "DEMO_DIR", renamed)
+
+    reloaded = config.load_settings()
+    assert reloaded["consolidated_statements"] == str(
+        (renamed / "consolidated_statements").resolve()
+    )
+    assert reloaded["custom_categories_path"] == str(
+        (renamed / "categories_custom.json").resolve()
+    )
 
 
 def test_save_writes_to_active_profile_not_the_other_one(profiles):
@@ -177,14 +248,39 @@ def test_save_writes_to_active_profile_not_the_other_one(profiles):
 
     data = config.load_settings()
     data["similarity_threshold"] = 99
+    data["consolidated_statements"] = "/personal/data"
+    data["custom_categories_path"] = "/personal/categories.json"
     config.save_settings(data)
 
-    assert json.loads((personal_dir / "settings.json").read_text())["similarity_threshold"] == 99
+    persisted = json.loads((personal_dir / "settings.json").read_text())
+    assert persisted["similarity_threshold"] == 99
+    assert persisted["consolidated_statements"] == "/personal/data"
+    assert persisted["custom_categories_path"] == "/personal/categories.json"
     assert not demo_dir.exists()
 
 
-def test_relative_consolidated_statements_anchored_at_profile_dir(profiles):
+def test_save_preserves_managed_path_keys_for_explicit_external_profile(
+    profiles, monkeypatch, tmp_path
+):
+    _personal_dir, _demo_dir = profiles
+    external = tmp_path / "external"
+    monkeypatch.setenv("MINT_PROFILE_DIR", str(external))
+    data = config.load_settings()
+    data["consolidated_statements"] = "/external/data"
+    data["custom_categories_path"] = "/external/categories.json"
+
+    config.save_settings(data)
+
+    persisted = json.loads((external / "settings.json").read_text())
+    assert persisted["consolidated_statements"] == "/external/data"
+    assert persisted["custom_categories_path"] == "/external/categories.json"
+
+
+def test_relative_consolidated_statements_anchored_at_external_profile_dir(
+    profiles, monkeypatch
+):
     _personal_dir, demo_dir = profiles
+    monkeypatch.setenv("MINT_PROFILE_DIR", str(demo_dir))
     demo_dir.mkdir(parents=True)
     (demo_dir / "settings.json").write_text(
         json.dumps({"consolidated_statements": "my_data", "custom_categories_path": "my_custom.json"})
@@ -196,8 +292,11 @@ def test_relative_consolidated_statements_anchored_at_profile_dir(profiles):
     assert data["custom_categories_path"] == str((demo_dir / "my_custom.json").resolve())
 
 
-def test_absolute_consolidated_statements_pass_through(profiles, tmp_path):
+def test_absolute_consolidated_statements_pass_through_external_profile(
+    profiles, monkeypatch, tmp_path
+):
     _personal_dir, demo_dir = profiles
+    monkeypatch.setenv("MINT_PROFILE_DIR", str(demo_dir))
     demo_dir.mkdir(parents=True)
     absolute = tmp_path / "elsewhere"
     (demo_dir / "settings.json").write_text(

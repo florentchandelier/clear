@@ -28,10 +28,17 @@
 
   <!-- General settings form -->
   <form method="post" class="mb-4">
+    {% if profile_label == 'demo' %}
+      <div class="alert alert-info small" role="note">
+        Demo data and custom-category paths are managed by <code>make demo</code>
+        and are regenerated with the synthetic profile.
+      </div>
+    {% endif %}
     <div class="mb-3">
       <label for="consolidated_statements" class="form-label">Consolidated Statements Folder</label>
       <input type="text" class="form-control" id="consolidated_statements" name="consolidated_statements"
-             value="{{ settings.consolidated_statements }}">
+             value="{{ settings.consolidated_statements }}"
+             {% if profile_label == 'demo' %}readonly{% endif %}>
     </div>
     <div class="mb-3">
       <label for="base_categories_path" class="form-label">Base Categories File</label>
@@ -42,7 +49,8 @@
     <div class="mb-3">
       <label for="custom_categories_path" class="form-label">Custom Categories File</label>
       <input type="text" class="form-control" id="custom_categories_path" name="custom_categories_path"
-             value="{{ settings.custom_categories_path }}">
+             value="{{ settings.custom_categories_path }}"
+             {% if profile_label == 'demo' %}readonly{% endif %}>
     </div>
     <div class="mb-3">
       <label for="similarity_threshold" class="form-label">Similarity Threshold (%)</label>
