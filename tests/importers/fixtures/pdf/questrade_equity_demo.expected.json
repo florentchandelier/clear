@@ -1,0 +1,24 @@
+{
+  "export_date": "<parse-date>",
+  "document_signature": {
+    "document_type": "QUESTRADE_NAV",
+    "validation_passed": true,
+    "validation_message": "Dealer signature validated.; Balance cross-check passed."
+  },
+  "account_summary": {
+    "account_id": "11111111",
+    "account_name": "TFSA/Cash",
+    "institution": "Questrade",
+    "account_side": "asset",
+    "account_class": "investment",
+    "base_currency": "CAD"
+  },
+  "nav_snapshots": [
+    {
+      "date": "2025-01-31",
+      "nav": 12345.67
+    }
+  ],
+  "validation_passed": true,
+  "validation_message": "Dealer signature validated.; Balance cross-check passed."
+}

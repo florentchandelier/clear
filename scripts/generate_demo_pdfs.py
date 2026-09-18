@@ -5,8 +5,15 @@ Importers are never weakened to accommodate a fixture: these PDFs must
 satisfy the existing signature/layout rules as they
 already stand).
 
-Currently covers:
-  - cash.bmo_chequing_fr  (BmoChequingFrImporter)
+Currently covers every registered PDF importer:
+  - cash.bmo_chequing_fr
+  - credit.bmo_mastercard_fr
+  - loc.bmo_heloc_fr
+  - investment.bmo_nesbitt_ca
+  - investment.interactive_brokers_ca
+  - investment.questrade_equity
+  - asset.car_fmv_cargurus
+  - asset.home_fmv_evaluation_fonciere
 
 Everything in the output is invented: fake account numbers, fake merchant
 names, obviously-synthetic amounts. Nothing here derives from a real
@@ -47,6 +54,10 @@ _METADATA = {
     "producer": "PyMuPDF",
     "creationDate": _FIXED_DATE,
     "modDate": _FIXED_DATE,
+}
+_PUBLIC_FIXTURE_METADATA = {
+    **_METADATA,
+    "title": "Synthetic CLEAR importer fixture",
 }
 
 FONT = "helv"
@@ -213,6 +224,8 @@ def build_bmo_chequing_pdf(out_path: Path) -> Dict[str, Any]:
     doc.close()
 
     return {
+        "kind": "transactional",
+        "account_id": _ACCOUNT_NUMBER_VISIBLE,
         "period_end": f"{_PERIOD_END_YEAR}-01-{_PERIOD_END_DAY:02d}",
         "total_debits": total_debits,
         "total_credits": total_credits,
@@ -222,13 +235,254 @@ def build_bmo_chequing_pdf(out_path: Path) -> Dict[str, Any]:
     }
 
 
+# ─────────────────────────────────────────────────────────────
+# Shared helpers for the remaining public fixtures
+# ─────────────────────────────────────────────────────────────
+
+def _save_document(doc: fitz.Document, out_path: Path) -> None:
+    """Save a tiny PDF with stable metadata and a stable PDF identifier."""
+    doc.set_metadata(_PUBLIC_FIXTURE_METADATA)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    doc.save(str(out_path), garbage=4, deflate=True, clean=True, no_new_id=True)
+    doc.close()
+
+
+def _build_lines_pdf(
+    out_path: Path,
+    lines: List[str],
+    *,
+    font_size: float = 10.0,
+    line_height: float = 18.0,
+) -> None:
+    """Build a deterministic, text-only statement with one line per item."""
+    doc = fitz.open()
+    page = doc.new_page(width=612, height=792)
+    y = 54.0
+    for line in lines:
+        page.insert_text((42.0, y), line, fontname=FONT, fontsize=font_size)
+        y += line_height
+    _save_document(doc, out_path)
+
+
+# ─────────────────────────────────────────────────────────────
+# BMO Mastercard (FR)
+# ─────────────────────────────────────────────────────────────
+
+def build_bmo_mastercard_pdf(out_path: Path) -> Dict[str, Any]:
+    lines = [
+        "BMO Banque de Montréal",
+        "Carte Mastercard BMO",
+        "DOCUMENT SYNTHETIQUE - DONNEES DE DEMONSTRATION",
+        "Date du relevé 15 janvier 2025",
+        "Solde dû 80,00 $",
+        "No de carte: XXXX XXXX XXXX 1111 DEMO CLIENT",
+        "1 janv 2 janv DEMO EPICERIE TEST 100,00",
+        "3 janv 3 janv PAIEMENT DEMO TEST 20,00 CR",
+        "Sous-total pour DEMO CLIENT 100,00",
+    ]
+    _build_lines_pdf(out_path, lines)
+    return {
+        "kind": "transactional",
+        "account_id": "bmo_credit_combined",
+        "period_end": "2025-01-15",
+        "closing_balance": -80.0,
+        "transaction_count": 2,
+        "regular_count": 1,
+        "transfer_count": 1,
+    }
+
+
+# ─────────────────────────────────────────────────────────────
+# BMO HELOC (FR)
+# ─────────────────────────────────────────────────────────────
+
+def build_bmo_heloc_pdf(out_path: Path) -> Dict[str, Any]:
+    lines = [
+        "BMO Banque de Montréal",
+        "Margexpress sur valeur domiciliaire",
+        "DOCUMENT SYNTHETIQUE - DONNEES DE DEMONSTRATION",
+        "Numéro de compte : 1111 1111 1234",
+        "Montréal QC H1H 1H1",
+        "22 janvier 2025",
+        "Solde précédent, 22déc 1 000,00 $",
+        "Nouveau solde, 22 janv 900,00 $",
+        "20déc 1 20déc INTERET DEMO TEST 50,00",
+        "10janv 2 10janv PAIEMENT DEMO TEST 150,00 CR",
+        "Veuillez payer selon votre convention.",
+    ]
+    _build_lines_pdf(out_path, lines)
+    return {
+        "kind": "transactional",
+        "account_id": "bmo_heloc_1234",
+        "period_end": "2025-01-22",
+        "closing_balance": -900.0,
+        "transaction_count": 2,
+        "regular_count": 1,
+        "transfer_count": 1,
+    }
+
+
+# ─────────────────────────────────────────────────────────────
+# BMO Nesbitt Burns (NAV)
+# ─────────────────────────────────────────────────────────────
+
+def build_bmo_nesbitt_pdf(out_path: Path) -> Dict[str, Any]:
+    lines = [
+        "Relevé BMO Nesbitt Burns",
+        "31 janvier 2025",
+        "Compte REER #111-11111-11",
+        "bmonesbittburns.com",
+        "DOCUMENT SYNTHETIQUE - DONNEES DE DEMONSTRATION",
+        "Total global ($CAD) 12 345,67",
+    ]
+    _build_lines_pdf(out_path, lines)
+    return {
+        "kind": "nav",
+        "account_id": "111-11111-11",
+        "snapshot_date": "2025-01-31",
+        "nav": 12345.67,
+    }
+
+
+# ─────────────────────────────────────────────────────────────
+# Interactive Brokers Canada (NAV + Camelot stream table)
+# ─────────────────────────────────────────────────────────────
+
+def build_interactive_brokers_pdf(out_path: Path) -> Dict[str, Any]:
+    doc = fitz.open()
+    page = doc.new_page(width=612, height=792)
+
+    def text(x: float, y: float, value: str, *, bold: bool = False) -> None:
+        page.insert_text(
+            (x, y), value, fontname=FONT_BOLD if bold else FONT, fontsize=10.0
+        )
+
+    text(42, 54, "Interactive Brokers Canada Inc.", bold=True)
+    text(42, 72, "Activity Statement", bold=True)
+    text(42, 90, "DOCUMENT SYNTHETIQUE - DONNEES DE DEMONSTRATION")
+    text(42, 108, "Account U111111")
+    text(42, 126, "Account Type Individual")
+    text(42, 144, "Account Capabilities Cash")
+    text(42, 162, "Base Currency CAD")
+    text(42, 180, "Customer Type Tax-Free Savings Account")
+
+    # Camelot stream mode infers these two columns from their horizontal
+    # separation. The importer deliberately reads the cell immediately to
+    # the right of "Ending Value".
+    text(42, 228, "Net Asset Value", bold=True)
+    text(42, 246, "Period")
+    text(250, 246, "January 31, 2025")
+    text(42, 264, "Starting Value")
+    text(250, 264, "10,000.00")
+    text(42, 282, "Change in NAV")
+    text(250, 282, "2,345.67")
+    text(42, 300, "Ending Value", bold=True)
+    text(250, 300, "12,345.67", bold=True)
+
+    _save_document(doc, out_path)
+    return {
+        "kind": "nav",
+        "account_id": "U111111",
+        "snapshot_date": "2025-01-31",
+        "nav": 12345.67,
+    }
+
+
+# ─────────────────────────────────────────────────────────────
+# Questrade (NAV)
+# ─────────────────────────────────────────────────────────────
+
+def build_questrade_pdf(out_path: Path) -> Dict[str, Any]:
+    lines = [
+        "Questrade",
+        "Dealer: Questrade, Inc.",
+        "DOCUMENT SYNTHETIQUE - DONNEES DE DEMONSTRATION",
+        "Account #: 11111111",
+        "Type: Tax-Free Savings Account (TFSA) Account opened: January 1, 2020",
+        "Current month: January 31, 2025",
+        "Current month balance: $12,345.67",
+        "Balance Changes Combined in (CAD)",
+        "Closing balance 12,345.67",
+    ]
+    _build_lines_pdf(out_path, lines)
+    return {
+        "kind": "nav",
+        "account_id": "11111111",
+        "snapshot_date": "2025-01-31",
+        "nav": 12345.67,
+    }
+
+
+# ─────────────────────────────────────────────────────────────
+# CarGurus vehicle valuation (NAV)
+# ─────────────────────────────────────────────────────────────
+
+def build_cargurus_pdf(out_path: Path) -> Dict[str, Any]:
+    lines = [
+        "www.cargurus.ca",
+        "DOCUMENT SYNTHETIQUE - DONNEES DE DEMONSTRATION",
+        "Year: 2018",
+        "Make: Demo",
+        "Model: Roadster",
+        "Great Deal $12,345",
+        "Date: 2025-01-31",
+    ]
+    _build_lines_pdf(out_path, lines)
+    # Keep the expected ID independently visible to the test rather than
+    # importing the production hash helper into fixture generation.
+    return {
+        "kind": "nav",
+        "account_name": "2018 Demo Roadster",
+        "snapshot_date": "2025-01-31",
+        "nav": 12345.0,
+    }
+
+
+# ─────────────────────────────────────────────────────────────
+# Québec municipal home valuation (NAV)
+# ─────────────────────────────────────────────────────────────
+
+def build_home_valuation_pdf(out_path: Path) -> Dict[str, Any]:
+    lines = [
+        "role-evaluation-fonciere",
+        "DOCUMENT SYNTHETIQUE - DONNEES DE DEMONSTRATION",
+        "Numéro de lot : 1111111",
+        "Adresse : 123 Avenue Démonstration",
+        "Valeur du terrain : 100 000 $",
+        "Valeur du bâtiment : 200 000 $",
+        "Valeur de l'immeuble : 300 000 $",
+        "Date du rapport : 2025-01-31",
+    ]
+    _build_lines_pdf(out_path, lines)
+    return {
+        "kind": "nav",
+        "account_id": "1111111",
+        "snapshot_date": "2025-01-31",
+        "nav": 300000.0,
+    }
+
+
 GENERATORS = {
     "bmo_chequing_fr_demo.pdf": build_bmo_chequing_pdf,
+    "bmo_mastercard_fr_demo.pdf": build_bmo_mastercard_pdf,
+    "bmo_heloc_fr_demo.pdf": build_bmo_heloc_pdf,
+    "bmo_nesbitt_ca_demo.pdf": build_bmo_nesbitt_pdf,
+    "interactive_brokers_ca_demo.pdf": build_interactive_brokers_pdf,
+    "questrade_equity_demo.pdf": build_questrade_pdf,
+    "car_cargurus_valuation_demo.pdf": build_cargurus_pdf,
+    "home_evaluation_fonciere_demo.pdf": build_home_valuation_pdf,
 }
 
 # Which registered importer each generated PDF is meant to be parsed by.
 IMPORTER_KEYS = {
     "bmo_chequing_fr_demo.pdf": "cash.bmo_chequing_fr",
+    "bmo_mastercard_fr_demo.pdf": "credit.bmo_mastercard_fr",
+    "bmo_heloc_fr_demo.pdf": "loc.bmo_heloc_fr",
+    "bmo_nesbitt_ca_demo.pdf": "investment.bmo_nesbitt_ca",
+    "interactive_brokers_ca_demo.pdf": "investment.interactive_brokers_ca",
+    "questrade_equity_demo.pdf": "investment.questrade_equity",
+    "car_cargurus_valuation_demo.pdf": "asset.car_fmv_cargurus",
+    "home_evaluation_fonciere_demo.pdf": "asset.home_fmv_evaluation_fonciere",
 }
 
 # export_date is `datetime.now()` inside the importers, so it can't be part

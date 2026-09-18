@@ -1,0 +1,57 @@
+{
+  "export_date": "<parse-date>",
+  "document_signature": {
+    "document_type": "BMO_HELOC_FRENCH"
+  },
+  "validation_passed": true,
+  "validation_message": "Validation passed: opening + net_delta ≈ closing (-1000.00 + 100.00 ≈ -900.00).",
+  "account_summary": {
+    "account_id": "bmo_heloc_1234",
+    "account_name": "BMO HELOC",
+    "account_side": "liability",
+    "account_class": "loc",
+    "institution": "BMO",
+    "base_currency": "CAD",
+    "current_balance": {
+      "date": "2025-01-22",
+      "amount": -900.0
+    },
+    "notes": "HELOC balance derived from 'Nouveau solde' in 'Votre compte en un coup d'oeil'. Currency inferred as CAD from Canadian address on statement."
+  },
+  "statements": [
+    {
+      "summary": {
+        "statement_date": "2025-01-22",
+        "opening_balance": -1000.0,
+        "closing_balance": -900.0,
+        "total_debits": 50.0,
+        "total_credits": 150.0,
+        "net_amount": 100.0,
+        "statement_subtotal": -900.0,
+        "validation_passed": true,
+        "validation_message": "Validation passed: opening + net_delta ≈ closing (-1000.00 + 100.00 ≈ -900.00)."
+      },
+      "transactions": [
+        {
+          "operation_date": "2024-12-20",
+          "description": "interet demo test",
+          "amount": -50.0,
+          "debit": 50.0,
+          "credit": 0.0,
+          "is_credit": false,
+          "transaction_type": "expense"
+        },
+        {
+          "operation_date": "2025-01-10",
+          "description": "paiement demo test",
+          "amount": 150.0,
+          "debit": 0.0,
+          "credit": 150.0,
+          "is_credit": true,
+          "transaction_type": "transfer"
+        }
+      ],
+      "parent_account_id": "bmo_heloc_1234"
+    }
+  ]
+}

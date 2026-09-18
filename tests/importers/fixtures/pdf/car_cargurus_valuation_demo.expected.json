@@ -1,0 +1,24 @@
+{
+  "export_date": "<parse-date>",
+  "document_signature": {
+    "document_type": "cargurus-vehicle-valuation",
+    "validation_passed": true,
+    "validation_message": "Vehicle identified: 2018 Demo Roadster; Valuation parsed: 12345.00 CAD; Snapshot date parsed: 2025-01-31"
+  },
+  "validation_passed": true,
+  "validation_message": "Vehicle identified: 2018 Demo Roadster; Valuation parsed: 12345.00 CAD; Snapshot date parsed: 2025-01-31",
+  "account_summary": {
+    "account_id": "437699815122",
+    "account_name": "2018 Demo Roadster",
+    "institution": "CarGurus",
+    "account_side": "asset",
+    "account_class": "car_fmv",
+    "base_currency": "CAD"
+  },
+  "nav_snapshots": [
+    {
+      "date": "2025-01-31",
+      "nav": 12345.0
+    }
+  ]
+}

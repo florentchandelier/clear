@@ -1,0 +1,24 @@
+{
+  "export_date": "<parse-date>",
+  "document_signature": {
+    "document_type": "montreal.ca/role-evaluation-fonciere",
+    "validation_passed": true,
+    "validation_message": "FMV component cross-check passed."
+  },
+  "validation_passed": true,
+  "validation_message": "FMV component cross-check passed.",
+  "account_summary": {
+    "account_id": "1111111",
+    "account_name": "123 Avenue Démonstration",
+    "institution": "Municipalité de Montréal-Ouest",
+    "account_side": "asset",
+    "account_class": "home_fmv",
+    "base_currency": "CAD"
+  },
+  "nav_snapshots": [
+    {
+      "date": "2025-01-31",
+      "nav": 300000.0
+    }
+  ]
+}

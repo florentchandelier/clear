@@ -1,0 +1,62 @@
+{
+  "export_date": "<parse-date>",
+  "document_signature": {
+    "document_type": "BMO_MASTERCARD_FRENCH"
+  },
+  "validation_passed": true,
+  "validation_message": "Validation passed: sum(amount) ≈ statement subtotal.",
+  "account_summary": {
+    "account_id": "bmo_credit_combined",
+    "account_name": "BMO MasterCard (Combined)",
+    "base_currency": "CAD",
+    "account_side": "liability",
+    "account_class": "credit_card",
+    "institution": "BMO",
+    "current_balance": {
+      "date": "2025-01-15",
+      "amount": -80.0
+    },
+    "notes": "combined statement balance for all cardholders (Solde dû / Solde total)"
+  },
+  "total_cardholders": 1,
+  "statements": [
+    {
+      "cardholder_info": {
+        "name": "DEMO CLIENT",
+        "card_number": "XXXX XXXX XXXX 1111",
+        "card_digits": "1111",
+        "parent_account_id": "bmo_credit_combined"
+      },
+      "summary": {
+        "total_transactions": 2,
+        "total_debits": 100.0,
+        "total_credits": 0.0,
+        "net_amount": -100.0,
+        "statement_subtotal": -100.0,
+        "validation_passed": true,
+        "validation_message": "Validation passed: sum(amount) ≈ statement subtotal.",
+        "statement_date": "2025-01-15"
+      },
+      "transactions": [
+        {
+          "operation_date": "2025-01-01",
+          "description": "DEMO EPICERIE TEST",
+          "amount": -100.0,
+          "is_credit": false,
+          "debit": 100.0,
+          "credit": 0.0,
+          "transaction_type": "expense"
+        },
+        {
+          "operation_date": "2025-01-03",
+          "description": "PAIEMENT DEMO TEST",
+          "amount": 20.0,
+          "is_credit": true,
+          "debit": 0.0,
+          "credit": 20.0,
+          "transaction_type": "transfer"
+        }
+      ]
+    }
+  ]
+}

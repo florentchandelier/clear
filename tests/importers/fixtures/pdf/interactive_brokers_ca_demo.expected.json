@@ -1,0 +1,24 @@
+{
+  "export_date": "<parse-date>",
+  "document_signature": {
+    "document_type": "INTERACTIVE_BROKERS_CA_NAV",
+    "validation_passed": true,
+    "validation_message": "Validated Interactive Brokers Canada statement.; NAV found: 12,345.67 CAD"
+  },
+  "account_summary": {
+    "account_id": "U111111",
+    "account_name": "TFSA/Cash",
+    "institution": "Interactive Brokers Canada Inc.",
+    "account_side": "asset",
+    "account_class": "investment",
+    "base_currency": "CAD"
+  },
+  "nav_snapshots": [
+    {
+      "date": "2025-01-31",
+      "nav": 12345.67
+    }
+  ],
+  "validation_passed": true,
+  "validation_message": "Validated Interactive Brokers Canada statement.; NAV found: 12,345.67 CAD"
+}

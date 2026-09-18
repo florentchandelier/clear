@@ -179,6 +179,12 @@ and registering it with the application.
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full walkthrough.
 
+Every importer in this table has a deterministic, invented PDF fixture and a
+public end-to-end regression test. See
+[`tests/importers/fixtures/pdf/README.md`](tests/importers/fixtures/pdf/README.md)
+for the coverage matrix and regeneration procedure. No personal statement is
+needed to run these tests.
+
 ---
 
 # Technical architecture
