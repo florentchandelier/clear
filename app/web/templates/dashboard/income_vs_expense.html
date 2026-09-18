@@ -1,0 +1,21 @@
+<!-- app/web/templates/dashboard/income_vs_expense.html -->
+<div id="view-incomeexpense" class="dashboard-view d-none">
+  <div class="row g-3">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h6 mb-0">Cash Flow: Income vs Outflows</h2>
+            <span class="text-muted small" id="incomeExpenseYearLabel"></span>
+          </div>
+          <div class="text-muted small mb-2">
+            Includes taxes and other mandatory outflows. Transfers excluded.
+          </div>
+          <div class="chart-box">
+            <canvas id="incomeExpenseChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

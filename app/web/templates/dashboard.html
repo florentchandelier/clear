@@ -1,0 +1,108 @@
+<!-- app/web/templates/dashboard.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center mb-4">
+  <h1 class="h4 mb-3">Dashboard</h1>
+
+  <!-- View selector -->
+  <div class="btn-group" role="group" id="dashboardModeGroup">
+    <button type="button" class="btn btn-outline-primary active" data-view="networth">
+      Net Worth
+    </button>
+    <button type="button" class="btn btn-outline-primary" data-view="spending">
+      Spending
+    </button>
+    <button type="button" class="btn btn-outline-primary" data-view="incomeexpense">
+      Cash Flow
+    </button>
+  </div>
+
+  <!-- Year selector + toggles -->
+  <div class="d-flex align-items-center gap-3 mt-3">
+    <div class="d-flex align-items-center gap-2">
+      <label class="form-label me-2 mb-0 small text-muted">Year</label>
+      <select id="yearSelect" class="form-select form-select-sm" style="width:auto"></select>
+    </div>
+    <div class="btn-group btn-group-sm" role="group">
+      <input type="radio" class="btn-check" name="viewToggle" id="viewCategory" value="category" checked>
+      <label class="btn btn-outline-secondary" for="viewCategory">Category</label>
+      <input type="radio" class="btn-check" name="viewToggle" id="viewTag" value="tag">
+      <label class="btn btn-outline-secondary" for="viewTag">Tag</label>
+    </div>
+  </div>
+</div>
+
+<!-- Views -->
+{% include "dashboard/networth.html" %}
+{% include "dashboard/expense.html" %}
+{% include "dashboard/income_vs_expense.html" %}
+
+{% endblock %}
+
+{% block scripts %}
+<style>
+  .chart-box { position: relative; height: 280px; width: 100%; }
+  #dashboardModeGroup .btn.active {
+    background-color: var(--bs-primary);
+    color: #fff;
+  }
+</style>
+
+<script src="/static/js/dashboard/networth.js"></script>
+<script src="/static/js/dashboard/spending.js"></script>
+<script src="/static/js/dashboard/income_vs_expense.js"></script>
+<script src="/static/js/dashboard.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    try {
+      // Load year options
+      const [yearsRes, latestRes] = await Promise.all([
+        fetch("/api/transactions/years"),
+        fetch("/api/transactions/latest")
+      ]);
+      const [years, latest] = await Promise.all([yearsRes.json(), latestRes.json()]);
+
+      const yearSelect = document.getElementById("yearSelect");
+      const selectedYearLabel = document.getElementById("selectedYearLabel");
+      const topYearLabel = document.getElementById("topYearLabel");
+      const incomeExpenseYearLabel = document.getElementById("incomeExpenseYearLabel");
+
+      if (!years.length) {
+        yearSelect.innerHTML = "<option>No data</option>";
+
+        // Still initialize dashboard JS
+        await initDashboardJS();
+
+        // Default to net worth view (empty)
+        showDashboardView("networth");
+
+        return;
+      }
+
+      // Populate dropdown dynamically
+      yearSelect.innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join("");
+      yearSelect.value = latest.year || years[0];
+      selectedYearLabel.textContent = latest.year;
+      topYearLabel.textContent = latest.year;
+      incomeExpenseYearLabel.textContent = latest.year;
+
+      // Initialize dashboard JS (handles view switching & charts)
+      await initDashboardJS();
+
+      // Wire view selector
+      document.querySelectorAll("#dashboardModeGroup button").forEach(btn => {
+        btn.addEventListener("click", e => {
+          document.querySelectorAll("#dashboardModeGroup button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          const view = btn.dataset.view;
+          showDashboardView(view);
+        });
+      });
+    } catch (err) {
+      console.error("Dashboard init failed:", err);
+    }
+  });
+</script>
+{% endblock %}

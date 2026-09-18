@@ -1,0 +1,24 @@
+{
+  "export_date": "2026-01-04",
+  "document_signature": {
+    "document_type": "role-evaluation-fonciere",
+    "validation_passed": true,
+    "validation_message": "FMV component cross-check passed."
+  },
+  "validation_passed": true,
+  "validation_message": "FMV component cross-check passed.",
+  "account_summary": {
+    "account_id": "1234567",
+    "account_name": "123 Avenue somewhere",
+    "institution": "Municipalité de Montréal-Ouest",
+    "account_side": "asset",
+    "account_class": "home_fmv",
+    "base_currency": "CAD"
+  },
+  "nav_snapshots": [
+    {
+      "date": "2025-12-16",
+      "nav": 123.0
+    }
+  ]
+}

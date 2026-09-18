@@ -1,0 +1,23 @@
+# Core dependencies with Python 3.12 compatibility
+Flask>=3.0.0
+pandas==2.3.2
+numpy>=1.25.0
+PyPDF2>=3.0.1
+openpyxl>=3.1.2
+plotly>=5.17.0
+python-dateutil>=2.8.2
+
+# Alternative PDF libraries if PyPDF2 has issues
+pypdf==5.9.0
+pdfplumber==0.11.7
+pymupdf==1.26.4  # PDF fixture byte determinism depends on this serializer
+camelot-py==1.0.9  # need sudo apt-get install ghostscript python3-tk
+
+# parquet consolidation
+pyarrow
+duckdb
+rapidfuzz
+jsonschema
+
+# app features
+yfinance

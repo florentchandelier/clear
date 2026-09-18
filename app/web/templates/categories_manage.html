@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h1 class="h4 mb-0">Manage Categories</h1>
+  <div class="text-muted small">
+    Manage your category hierarchy and run bulk updates.<br>
+    To correct or propagate categories, use the <a href="/transactions/view">Transactions page</a>.
+  </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} mt-2">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row g-3">
+  <!-- Left column: add + bulk update -->
+  <div class="col-12 col-lg-5">
+    <!-- Add / Ensure Category -->
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6 mb-3">Add Category / Subcategory / Type</h2>
+        <form method="post" action="{{ url_for('categories.add_category') }}" class="row g-2">
+          <div class="col-12">
+            <input list="categories_list" name="category" class="form-control" placeholder="Category (required)" required>
+            <datalist id="categories_list"></datalist>
+          </div>
+          <div class="col-6">
+            <input list="subcategories_list" name="subcategory" class="form-control" placeholder="Subcategory (optional)">
+            <datalist id="subcategories_list"></datalist>
+          </div>
+          <div class="col-6">
+            <input list="types_list" name="type" class="form-control" placeholder="Type (optional)">
+            <datalist id="types_list"></datalist>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary w-100">Add / Ensure</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Bulk Update -->
+    <div class="card shadow-sm mt-3">
+      <div class="card-body">
+        <h2 class="h6 mb-3">Bulk Update Transactions</h2>
+        <form method="post" action="{{ url_for('categories.update_categories_web') }}" class="row g-3">
+          <div class="col-4">
+            <label class="form-label small">Threshold</label>
+            <input type="number" name="threshold" class="form-control" value="80" min="0" max="100">
+          </div>
+          <div class="col-4">
+            <label class="form-label small">Year (optional)</label>
+            <input type="number" name="year" class="form-control" placeholder="2025">
+          </div>
+          <div class="col-12">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="all_tx" id="allTxCheck">
+              <label class="form-check-label" for="allTxCheck">Update all transactions</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="uncategorized" id="uncatCheck">
+              <label class="form-check-label" for="uncatCheck">Only Uncategorized</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="unsubcategorized" id="unsubcatCheck">
+              <label class="form-check-label" for="unsubcatCheck">Only Unsubcategorized</label>
+            </div>
+          </div>
+          <div class="col-12">
+            <p class="text-muted small">
+              Use this when you’ve made major category rule changes or imported new transactions
+              to reapply automatic categorization in bulk.
+            </p>
+            <button type="submit" class="btn btn-success">Run Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right column: category explorer -->
+  <div class="col-12 col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h2 class="h6 mb-0">Existing Categories</h2>
+        </div>
+
+        {% if categories and categories is mapping %}
+          <div class="accordion" id="catAccordion">
+            {% for cat, cat_node in categories.items() if cat_node is mapping %}
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ loop.index }}">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                          data-bs-target="#collapse{{ loop.index }}" aria-expanded="false"
+                          aria-controls="collapse{{ loop.index }}">
+                    {{ cat }}
+                  </button>
+                </h2>
+                <div id="collapse{{ loop.index }}" class="accordion-collapse collapse"
+                     aria-labelledby="heading{{ loop.index }}" data-bs-parent="#catAccordion">
+                  <div class="accordion-body">
+
+                    <form method="post" action="{{ url_for('categories.delete_category') }}" class="mb-3">
+                      <input type="hidden" name="category" value="{{ cat }}">
+                      <button type="submit" class="btn btn-danger btn-sm">Delete Category</button>
+                    </form>
+
+                    <h6>Learned Examples</h6>
+                    <p class="text-muted small">These examples come from propagated corrections.</p>
+                    {% if '_seeds' in cat_node and cat_node['_seeds'] %}
+                      <ul class="list-group mb-3">
+                        {% for seed in cat_node['_seeds'] %}
+                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ seed['description'] }}
+                            <form method="post" action="{{ url_for('categories.remove_seed') }}" class="d-inline">
+                              <input type="hidden" name="category" value="{{ cat }}">
+                              <input type="hidden" name="subcategory" value="">
+                              <input type="hidden" name="type" value="">
+                              <input type="hidden" name="transaction_id" value="{{ seed['transaction_id'] }}">
+                              <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                            </form>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    {% else %}
+                      <p class="text-muted"><em>No learned examples yet</em></p>
+                    {% endif %}
+
+                    {% for sub, sub_node in cat_node.items() if sub != '_seeds' and sub_node is mapping %}
+                      <div class="mt-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <strong>{{ sub }}</strong>
+                          <form method="post" action="{{ url_for('categories.delete_category') }}" class="d-inline">
+                            <input type="hidden" name="category" value="{{ cat }}">
+                            <input type="hidden" name="subcategory" value="{{ sub }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete Subcategory</button>
+                          </form>
+                        </div>
+
+                        <h6 class="mt-2">Learned Examples</h6>
+                        <p class="text-muted small">These examples come from propagated corrections.</p>
+                        {% if '_seeds' in sub_node and sub_node['_seeds'] %}
+                          <ul class="list-group mb-2">
+                            {% for seed in sub_node['_seeds'] %}
+                              <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ seed['description'] }}
+                                <form method="post" action="{{ url_for('categories.remove_seed') }}" class="d-inline">
+                                  <input type="hidden" name="category" value="{{ cat }}">
+                                  <input type="hidden" name="subcategory" value="{{ sub }}">
+                                  <input type="hidden" name="type" value="">
+                                  <input type="hidden" name="transaction_id" value="{{ seed['transaction_id'] }}">
+                                  <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                </form>
+                              </li>
+                            {% endfor %}
+                          </ul>
+                        {% else %}
+                          <p class="text-muted"><em>No learned examples yet</em></p>
+                        {% endif %}
+
+                        {% for type_name, type_node in sub_node.items() if type_name != '_seeds' and type_node is mapping %}
+                          <div class="ms-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <strong>{{ type_name }}</strong>
+                              <form method="post" action="{{ url_for('categories.delete_category') }}" class="d-inline">
+                                <input type="hidden" name="category" value="{{ cat }}">
+                                <input type="hidden" name="subcategory" value="{{ sub }}">
+                                <input type="hidden" name="type" value="{{ type_name }}">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete Type</button>
+                              </form>
+                            </div>
+
+                            <h6 class="mt-2">Learned Examples</h6>
+                            <p class="text-muted small">These examples come from propagated corrections.</p>
+                            {% if '_seeds' in type_node and type_node['_seeds'] %}
+                              <ul class="list-group">
+                                {% for seed in type_node['_seeds'] %}
+                                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ seed['description'] }}
+                                    <form method="post" action="{{ url_for('categories.remove_seed') }}" class="d-inline">
+                                      <input type="hidden" name="category" value="{{ cat }}">
+                                      <input type="hidden" name="subcategory" value="{{ sub }}">
+                                      <input type="hidden" name="type" value="{{ type_name }}">
+                                      <input type="hidden" name="transaction_id" value="{{ seed['transaction_id'] }}">
+                                      <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                    </form>
+                                  </li>
+                                {% endfor %}
+                              </ul>
+                            {% else %}
+                              <p class="text-muted"><em>No learned examples yet</em></p>
+                            {% endif %}
+                          </div>
+                        {% endfor %}
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted mb-0">No categories defined yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Inline JSON for datalists -->
+<script>
+  window.__CATEGORIES__ = {{ categories|tojson }};
+  (function(){
+    const cats = window.__CATEGORIES__ || {};
+    const isMap = (x) => x && typeof x === 'object' && !Array.isArray(x);
+    const catList = document.getElementById('categories_list');
+    const subList = document.getElementById('subcategories_list');
+    const typeList = document.getElementById('types_list');
+
+    if (catList) {
+      Object.keys(cats).forEach(k => {
+        if (isMap(cats[k])) {
+          const o = document.createElement('option');
+          o.value = k;
+          catList.appendChild(o);
+        }
+      });
+    }
+    if (subList) {
+      Object.keys(cats).forEach(k => {
+        if (!isMap(cats[k])) return;
+        Object.keys(cats[k]).forEach(sk => {
+          if (sk === '_seeds' || !isMap(cats[k][sk])) return;
+          const o = document.createElement('option');
+          o.value = sk;
+          subList.appendChild(o);
+        });
+      });
+    }
+    if (typeList) {
+      Object.keys(cats).forEach(k => {
+        if (!isMap(cats[k])) return;
+        Object.keys(cats[k]).forEach(sk => {
+          const node = cats[k][sk];
+          if (sk === '_seeds' || !isMap(node)) return;
+          Object.keys(node).forEach(tk => {
+            if (tk === '_seeds' || !isMap(node[tk])) return;
+            const o = document.createElement('option');
+            o.value = tk;
+            typeList.appendChild(o);
+          });
+        });
+      });
+    }
+  })();
+</script>
+{% endblock %}

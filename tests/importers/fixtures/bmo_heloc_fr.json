@@ -1,0 +1,66 @@
+{
+  "export_date": "2026-01-04",
+  "document_signature": {
+    "document_type": "BMO_HELOC_FRENCH"
+  },
+  "validation_passed": true,
+  "validation_message": "Validation passed: opening + net_delta ≈ closing (-1234.86 + 1234.76 ≈ -11.10).",
+  "account_summary": {
+    "account_id": "bmo_heloc_1234",
+    "account_name": "BMO HELOC",
+    "account_side": "liability",
+    "account_class": "loc",
+    "institution": "BMO",
+    "base_currency": "CAD",
+    "current_balance": {
+      "date": "2025-01-22",
+      "amount": -11.1
+    },
+    "notes": "HELOC balance derived from 'Nouveau solde' in 'Votre compte en un coup d'oeil'. Currency inferred as CAD from Canadian address on statement."
+  },
+  "statements": [
+    {
+      "summary": {
+        "statement_date": "2025-01-22",
+        "opening_balance": -1234.86,
+        "closing_balance": -11.1,
+        "total_debits": 11.24,
+        "total_credits": 1234.0,
+        "net_amount": 1234.76,
+        "statement_subtotal": -55.1,
+        "validation_passed": true,
+        "validation_message": "Validation passed: opening + net_delta ≈ closing (-1234.86 + 1234.76 ≈ -11.10)."
+      },
+      "transactions": [
+        {
+          "operation_date": "2024-12-31",
+          "description": "paiement recu - merci",
+          "amount": 1234.0,
+          "debit": 0.0,
+          "credit": 1234.0,
+          "is_credit": true,
+          "transaction_type": "transfer"
+        },
+        {
+          "operation_date": "2025-01-22",
+          "description": "interet avances @ 05.45000% au 22jan",
+          "amount": -55.24,
+          "debit": 55.24,
+          "credit": 0.0,
+          "is_credit": false,
+          "transaction_type": "expense"
+        },
+        {
+          "operation_date": "2025-01-22",
+          "description": "interet achats @ 05.45000% au 22jan",
+          "amount": -0.0,
+          "debit": 0.0,
+          "credit": 0.0,
+          "is_credit": false,
+          "transaction_type": "expense"
+        }
+      ],
+      "parent_account_id": "bmo_heloc_1234"
+    }
+  ]
+}

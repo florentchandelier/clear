@@ -1,0 +1,211 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ImporterJson",
+  "type": "object",
+
+  "required": [
+    "export_date",
+    "document_signature",
+    "account_summary"
+  ],
+
+  "properties": {
+    "export_date": {
+      "type": "string"
+    },
+
+    "document_signature": {
+      "type": "object",
+      "required": ["document_type"],
+      "properties": {
+        "document_type": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+
+    "account_summary": {
+      "$ref": "#/$defs/account_summary"
+    },
+
+    "total_cardholders": {
+      "type": "integer"
+    },
+
+    "statements": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/statement" }
+    },
+
+    "nav_snapshots": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/nav_snapshot" }
+    },
+
+    "reconciliation": {
+      "$ref": "#/$defs/reconciliation"
+    }
+  },
+
+  "anyOf": [
+    { "required": ["statements"] },
+    { "required": ["nav_snapshots"] }
+  ],
+
+  "$defs": {
+    "account_summary": {
+      "type": "object",
+      "required": [
+        "account_id",
+        "account_name",
+        "institution",
+        "account_side",
+        "account_class",
+        "base_currency"
+      ],
+      "properties": {
+        "account_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "account_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "institution": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "account_side": {
+          "type": "string",
+          "enum": ["asset", "liability"]
+        },
+
+        "account_class": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "base_currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "transaction": {
+      "type": "object",
+      "required": [
+        "operation_date",
+        "description",
+        "amount",
+        "debit",
+        "credit",
+        "is_credit",
+        "transaction_type"
+      ],
+      "properties": {
+        "operation_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "description": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number"
+        },
+        "debit": {
+          "type": "number"
+        },
+        "credit": {
+          "type": "number"
+        },
+        "is_credit": {
+          "type": "boolean"
+        },
+        "transaction_type": {
+          "type": "string",
+          "enum": ["expense", "income", "transfer", "refund"]
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "nav_snapshot": {
+      "type": "object",
+      "required": ["date", "nav"],
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "nav": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "statement_summary": {
+      "type": "object",
+      "required": [
+        "validation_passed",
+        "validation_message"
+      ],
+      "properties": {
+        "opening_balance": { "type": ["number", "null"] },
+        "closing_balance": { "type": ["number", "null"] },
+        "total_debits": { "type": ["number", "null"] },
+        "total_credits": { "type": ["number", "null"] },
+        "net_amount": { "type": ["number", "null"] },
+        "statement_subtotal": { "type": ["number", "null"] },
+        "validation_passed": { "type": "boolean" },
+        "validation_message": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+
+    "cardholder_info": {
+      "type": "object",
+      "required": ["name", "card_digits"],
+      "properties": {
+        "name": { "type": "string" },
+        "card_number": { "type": "string" },
+        "card_digits": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+
+    "statement": {
+      "type": "object",
+      "required": ["summary", "transactions"],
+      "properties": {
+        "cardholder_info": { "$ref": "#/$defs/cardholder_info" },
+        "parent_account_id": { "type": "string" },
+        "summary": { "$ref": "#/$defs/statement_summary" },
+        "transactions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/transaction" }
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "reconciliation": {
+      "type": "object",
+      "properties": {
+        "declared_debits": { "type": ["number", "null"] },
+        "computed_debits": { "type": ["number", "null"] },
+        "declared_credits": { "type": ["number", "null"] },
+        "computed_credits": { "type": ["number", "null"] },
+        "debits_match": { "type": ["boolean", "null"] },
+        "credits_match": { "type": ["boolean", "null"] }
+      },
+      "additionalProperties": true
+    }
+  },
+
+  "additionalProperties": true
+}

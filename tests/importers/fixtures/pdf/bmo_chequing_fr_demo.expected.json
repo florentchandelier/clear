@@ -1,0 +1,110 @@
+{
+  "export_date": "<parse-date>",
+  "document_signature": {
+    "document_type": "BMO_CHEQUING_FRENCH"
+  },
+  "validation_passed": true,
+  "validation_message": "Debits and credits reconcile with statement totals.",
+  "account_summary": {
+    "account_id": "bmo_chequing_1111",
+    "account_name": "BMO Cash 1111",
+    "account_side": "asset",
+    "account_class": "cash",
+    "institution": "BMO",
+    "base_currency": "CAD",
+    "account_number": "11111111111",
+    "current_balance": {
+      "date": "2025-01-31",
+      "amount": 8711.98
+    },
+    "notes": "Chequing balance derived from statement (closing balance)."
+  },
+  "statements": [
+    {
+      "summary": {
+        "opening_balance": null,
+        "total_debits": 1088.02,
+        "total_credits": 4800.0,
+        "closing_balance": 8711.98,
+        "validation_passed": true,
+        "validation_message": "Debits and credits reconcile with statement totals.",
+        "statement_date": "2025-01-31"
+      },
+      "transactions": [
+        {
+          "operation_date": "2024-12-28",
+          "description": "Dépôt direct, DEMO EMPLOYEUR TEST",
+          "amount": 2400.0,
+          "debit": 0.0,
+          "credit": 2400.0,
+          "is_credit": true,
+          "transaction_type": "income"
+        },
+        {
+          "operation_date": "2025-01-03",
+          "description": "Prélèvement automatique, DEMO HYDRO TEST",
+          "amount": -142.35,
+          "debit": 142.35,
+          "credit": 0.0,
+          "is_credit": false,
+          "transaction_type": "expense"
+        },
+        {
+          "operation_date": "2025-01-06",
+          "description": "Achat par carte de débit, DEMO EPICERIE TEST",
+          "amount": -87.42,
+          "debit": 87.42,
+          "credit": 0.0,
+          "is_credit": false,
+          "transaction_type": "expense"
+        },
+        {
+          "operation_date": "2025-01-09",
+          "description": "Virement en ligne, TF 123",
+          "amount": -500.0,
+          "debit": 500.0,
+          "credit": 0.0,
+          "is_credit": false,
+          "transaction_type": "transfer"
+        },
+        {
+          "operation_date": "2025-01-14",
+          "description": "Dépôt direct, DEMO EMPLOYEUR TEST",
+          "amount": 2400.0,
+          "debit": 0.0,
+          "credit": 2400.0,
+          "is_credit": true,
+          "transaction_type": "income"
+        },
+        {
+          "operation_date": "2025-01-17",
+          "description": "Achat par carte de débit, DEMO CAFE TEST",
+          "amount": -12.75,
+          "debit": 12.75,
+          "credit": 0.0,
+          "is_credit": false,
+          "transaction_type": "expense"
+        },
+        {
+          "operation_date": "2025-01-22",
+          "description": "Prélèvement automatique, DEMO TELECOM TEST",
+          "amount": -95.5,
+          "debit": 95.5,
+          "credit": 0.0,
+          "is_credit": false,
+          "transaction_type": "expense"
+        },
+        {
+          "operation_date": "2025-01-28",
+          "description": "Virement INTERAC envoyé, DEMO",
+          "amount": -250.0,
+          "debit": 250.0,
+          "credit": 0.0,
+          "is_credit": false,
+          "transaction_type": "expense"
+        }
+      ],
+      "parent_account_id": "bmo_chequing_1111"
+    }
+  ]
+}

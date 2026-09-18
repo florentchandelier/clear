@@ -1,0 +1,40 @@
+{
+  "export_date": "2025-10-08 08:10:59",
+  "document_signature": {"document_type": "BMO_MASTERCARD_FRENCH"},
+  "account_summary": {},
+  "total_cardholders": 2,
+  "statements": [
+    {
+      "cardholder_info": {"name": "MME TEST USER A", "card_number": "XXXX XXXX XXXX 1111", "card_digits": "1111"},
+      "summary": {"total_transactions": 10,"total_debits": 2300.45,"total_credits": 0.0,"net_amount": 2300.45,"statement_subtotal": 2300.45,"validation_passed": true,"validation_message": "Validation checks whether the net amount of transactions equals the statement subtotal."},
+      "transactions": [
+        {"operation_date":"2025-07-02","description":"MARCHÉ BIO LOCAL QC","amount":55.60,"is_credit":false,"debit":55.60,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-04","description":"PHARMAPRIX #1001 QC","amount":18.24,"is_credit":false,"debit":18.24,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-05","description":"CAFÉ CENTRAL QC","amount":9.50,"is_credit":false,"debit":9.50,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-06","description":"AMZN Mktp CA*TEST123","amount":94.32,"is_credit":false,"debit":94.32,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-10","description":"IGA 001 MONTRÉAL QC","amount":124.18,"is_credit":false,"debit":124.18,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-12","description":"ESSO COUCHE-TARD 555 QC","amount":70.00,"is_credit":false,"debit":70.00,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-14","description":"RESTAURANT LE TEST QC","amount":89.40,"is_credit":false,"debit":89.40,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-18","description":"METRO ST-DENIS QC","amount":63.12,"is_credit":false,"debit":63.12,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-22","description":"ÉPICERIE TEST MARKET MONTREAL QC fuzzy","amount":210.00,"is_credit":false,"debit":210.00,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-25","description":"FRAIS INTÉRÊT","amount":8.25,"is_credit":false,"debit":8.25,"credit":0.0,"transaction_type":"expense"}
+      ]
+    },
+    {
+      "cardholder_info": {"name": "M. TEST USER B", "card_number": "XXXX XXXX XXXX 2222", "card_digits": "2222"},
+      "summary": {"total_transactions": 10,"total_debits": 2400.00,"total_credits": 0.0,"net_amount": 2400.00,"statement_subtotal": 2400.00,"validation_passed": true,"validation_message": "Validation checks whether the net amount of transactions equals the statement subtotal."},
+      "transactions": [
+        {"operation_date":"2025-07-03","description":"THE HOME DEPOT QC","amount":160.00,"is_credit":false,"debit":160.00,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-05","description":"CHU TESTVILLE QC","amount":15.10,"is_credit":false,"debit":15.10,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-08","description":"TELUS PRE-AUTH","amount":45.00,"is_credit":false,"debit":45.00,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-11","description":"ESSO TEST STATION QC","amount":28.60,"is_credit":false,"debit":28.60,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-14","description":"VIDEOTRON LTEE QC","amount":210.00,"is_credit":false,"debit":210.00,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-17","description":"RONA+ NDG QC","amount":95.34,"is_credit":false,"debit":95.34,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-20","description":"UBER TRIP MTL QC","amount":24.50,"is_credit":false,"debit":24.50,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-22","description":"CAFÉ TEST LOCAL","amount":11.80,"is_credit":false,"debit":11.80,"credit":0.0,"transaction_type":"expense"},
+        {"operation_date":"2025-07-25","description":"TRSF FROM ACCT 1234-001","amount":800.00,"is_credit":true,"debit":0.0,"credit":800.00,"transaction_type":"transfer"},
+        {"operation_date":"2025-08-01","description":"INSURANCE PAYMENT","amount":1010.00,"is_credit":false,"debit":1010.00,"credit":0.0,"transaction_type":"expense"}
+      ]
+    }
+  ]
+}

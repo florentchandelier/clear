@@ -1,0 +1,7 @@
+# Development / test dependencies.
+#
+# Not needed to run the app -- `make install` installs these alongside
+# requirements.txt so that the documented `make install && make demo &&
+# make test` flow works from a genuinely fresh checkout.
+
+pytest>=8.0

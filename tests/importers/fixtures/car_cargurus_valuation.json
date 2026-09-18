@@ -1,0 +1,24 @@
+{
+  "export_date": "2026-01-04",
+  "document_signature": {
+    "document_type": "cargurus-vehicle-valuation",
+    "validation_passed": true,
+    "validation_message": "Vehicle identified: 2018 Mazda CX-9; Valuation parsed: 1234.00 CAD; Snapshot date not found; using import date (UTC)."
+  },
+  "validation_passed": true,
+  "validation_message": "Vehicle identified: 2018 Mazda CX-9; Valuation parsed: 1234.00 CAD; Snapshot date not found; using import date (UTC).",
+  "account_summary": {
+    "account_id": "909017503965",
+    "account_name": "2018 Mazda CX-9",
+    "institution": "CarGurus",
+    "account_side": "asset",
+    "account_class": "car_fmv",
+    "base_currency": "CAD"
+  },
+  "nav_snapshots": [
+    {
+      "date": "2026-01-04",
+      "nav": 1234.0
+    }
+  ]
+}

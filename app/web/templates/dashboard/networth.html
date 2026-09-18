@@ -1,0 +1,149 @@
+<!-- app/web/templates/dashboard/networth.html -->
+<div id="view-networth" class="dashboard-view">
+
+  <!-- ───────────────────────────────────────────── -->
+  <!-- Section A — Net Worth Summary -->
+  <!-- ───────────────────────────────────────────── -->
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <div class="card shadow-sm text-center">
+        <div class="card-body py-4">
+          <div class="text-muted small mb-1">
+            Net Worth
+            <span class="ms-1 text-secondary" title="End-of-month balances across all accounts">
+              • End-of-month balance
+            </span>
+          </div>
+          <div id="netWorthValue" class="display-6 fw-semibold">
+            —
+          </div>
+          <div class="text-muted small mt-1">
+            If all assets were liquidated and liabilities settled at this date
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────── -->
+  <!-- Section E — Asset Mix -->
+  <!-- ───────────────────────────────────────────── -->
+  <div class="row g-3 mb-3git ">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h6 mb-3">Asset Mix</h2>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Asset Nature</th>
+                  <th>Liquidity</th>
+                  <th class="text-end">Value</th>
+                </tr>
+              </thead>
+              <tbody id="assetMatrixTable">
+                <tr>
+                  <td colspan="3" class="text-muted text-center small">
+                    No data
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────── -->
+  <!-- Section B — Liquid Financial Assets -->
+  <!-- ───────────────────────────────────────────── -->
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h6 mb-0">Liquid Financial Assets</h2>
+            <span class="text-muted small">
+              End-of-month balances · Cash + Liquid Investments − Outstanding Liabilities
+            </span>
+          </div>
+
+          <div class="chart-box">
+            <canvas id="liquidAssetsChart"></canvas>
+          </div>
+
+          <div class="mt-2 text-muted small">
+            Represents deployable capital based on <strong>end-of-month balances</strong>.
+            Liabilities reflect <strong>outstanding debt</strong> across liability accounts, not monthly spending.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────── -->
+  <!-- Section C — Illiquid Financial Assets -->
+  <!-- ───────────────────────────────────────────── -->
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h6 mb-3">Illiquid Financial Assets</h2>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Date</th>
+                  <th>Asset</th>
+                  <th class="text-end">Value</th>
+                </tr>
+              </thead>
+              <tbody id="illiquidAssetsTable">
+                <tr>
+                  <td colspan="3" class="text-muted text-center small">
+                    No valuation events
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────── -->
+  <!-- Section D — Real Assets -->
+  <!-- ───────────────────────────────────────────── -->
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h6 mb-3">Real Assets</h2>
+
+          <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Asset</th>
+                  <th>Date</th>
+                  <th class="text-end">Value</th>
+                </tr>
+              </thead>
+              <tbody id="realAssetsTable">
+                <tr>
+                  <td colspan="3" class="text-muted text-center small">
+                    No real assets recorded
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

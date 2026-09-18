@@ -1,0 +1,100 @@
+{
+  "export_date": "2026-01-04",
+  "document_signature": {
+    "document_type": "BMO_MASTERCARD_FRENCH"
+  },
+  "validation_passed": true,
+  "validation_message": "Validation passed: sum(amount) ≈ statement subtotal.",
+  "account_summary": {
+    "account_id": "bmo_credit_combined",
+    "account_name": "BMO MasterCard (Combined)",
+    "base_currency": "CAD",
+    "account_side": "liability",
+    "account_class": "credit_card",
+    "institution": "BMO",
+    "current_balance": {
+      "date": "2025-01-15",
+      "amount": -123.45
+    },
+    "notes": "combined statement balance for all cardholders (Solde dû / Solde total)"
+  },
+  "total_cardholders": 2,
+  "statements": [
+    {
+      "cardholder_info": {
+        "name": "MME XXX YYY",
+        "card_number": "XXXX XXXX XXXX 1234",
+        "card_digits": "1234",
+        "parent_account_id": "bmo_credit_combined"
+      },
+      "summary": {
+        "total_transactions": 2,
+        "total_debits": 123.9,
+        "total_credits": 75.55,
+        "net_amount": -123.45,
+        "statement_subtotal": -123.45,
+        "validation_passed": true,
+        "validation_message": "Validation passed: sum(amount) ≈ statement subtotal.",
+        "statement_date": "2025-01-15"
+      },
+      "transactions": [
+        {
+          "operation_date": "2024-12-12",
+          "description": "AGENCE DE MOBILITE DUR MONTREAL",
+          "amount": -4.32,
+          "is_credit": false,
+          "debit": 4.32,
+          "credit": 0.0,
+          "transaction_type": "expense"
+        },
+        {
+          "operation_date": "2024-12-12",
+          "description": "AGENCE DE MOBILITE DUR MONTREAL",
+          "amount": -7.15,
+          "is_credit": false,
+          "debit": 7.15,
+          "credit": 0.0,
+          "transaction_type": "expense"
+        }
+      ]
+    },
+    {
+      "cardholder_info": {
+        "name": "XXX YYY",
+        "card_number": "XXXX XXXX XXXX 1234",
+        "card_digits": "1234",
+        "parent_account_id": "bmo_credit_combined"
+      },
+      "summary": {
+        "total_transactions": 2,
+        "total_debits": 123.45,
+        "total_credits": 0.0,
+        "net_amount": -123.45,
+        "statement_subtotal": -123.45,
+        "validation_passed": true,
+        "validation_message": "Validation passed: sum(amount) ≈ statement subtotal.",
+        "statement_date": "2025-01-15"
+      },
+      "transactions": [
+        {
+          "operation_date": "2024-12-13",
+          "description": "REST CHEZ MOI MONTREAL QC",
+          "amount": -84.56,
+          "is_credit": false,
+          "debit": 84.56,
+          "credit": 0.0,
+          "transaction_type": "expense"
+        },
+        {
+          "operation_date": "2024-12-14",
+          "description": "IKEA MONTREAL SAINT-LAURENTQC",
+          "amount": -49.42,
+          "is_credit": false,
+          "debit": 49.42,
+          "credit": 0.0,
+          "transaction_type": "expense"
+        }
+      ]
+    }
+  ]
+}

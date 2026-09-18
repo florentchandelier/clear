@@ -1,0 +1,115 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+env/
+venv*/
+ENV/
+*.egg
+*.egg-info/
+dist/
+build/
+develop-eggs/
+.eggs/
+lib/
+lib64/
+parts/
+var/
+sdist/
+wheels/
+pip-wheel-metadata/
+.share/python-wheels/
+.manifest
+.pyinstaller/
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Flask specific
+instance/
+.webassets-cache
+*.log
+
+# SQLite databases
+*.db
+*.sqlite3
+
+# Parquet files (often large, generated data)
+*.parquet
+consolidated_statements/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Environments
+.env
+.env.*
+*.env
+
+# VS Code / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Bootstrap (if vendored locally instead of via CDN or package manager)
+static/bootstrap/
+static/css/bootstrap*.css
+static/js/bootstrap*.js
+
+# Node.js (if you’re managing Bootstrap with npm/yarn)
+node_modules/
+package-lock.json
+yarn.lock
+
+# System files
+.DS_Store
+Thumbs.db
+*.pdf
+uploads/
+pdf_statements/
+mint_app_aggregated.txt
+screenshots/
+
+# --- CLEAR release-safety additions ---
+
+# Personal, non-shareable settings and category data (legacy root-level
+# names -- a fresh checkout auto-creates these via app/config.py, they
+# should never be committed)
+/settings.json
+/categories_custom.json
+/categories_custom.json.backup
+*.backup
+
+# Legacy/local debug and statement archives
+/debug_parquet_statements*
+/parquet_statements/
+
+# Personal-use profile: ignore everything except the tracked template/readme
+/personal/*
+!/personal/README.md
+!/personal/settings.example.json
+
+# Synthetic PDF parser fixtures are allowed to be tracked despite the
+# blanket *.pdf rule above
+!/tests/importers/fixtures/pdf/
+!/tests/importers/fixtures/pdf/**

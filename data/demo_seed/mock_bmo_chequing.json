@@ -1,0 +1,44 @@
+{
+  "export_date": "2025-10-08 08:11:01",
+  "document_signature": {"document_type": "BMO_CHEQUING_FRENCH"},
+  "account_summary": {},
+  "statements": [
+    {
+      "cardholder_info": {
+        "name": "Compte de chèques test principal",
+        "card_number": "12345678-001",
+        "card_digits": "-001"
+      },
+      "summary": {
+        "opening_balance": null,
+        "total_debits": 9400.00,
+        "total_credits": 15750.00,
+        "closing_balance": null,
+        "validation_passed": true,
+        "validation_message": "Validation checks whether declared vs computed debit and credit totals match."
+      },
+      "transactions": [
+        {"operation_date":"2025-08-01","description":"Virement INTERAC TEST","amount":3200.00,"debit":0.0,"credit":3200.00,"is_credit":true,"transaction_type":"income"},
+        {"operation_date":"2025-08-02","description":"Prélèvement automatique, HYDRO QC","amount":95.60,"debit":95.60,"credit":0.0,"is_credit":false,"transaction_type":"expense"},
+        {"operation_date":"2025-08-03","description":"Achat par carte de débit, ÉPICERIE TEST MARKET MONTREAL QC","amount":82.14,"debit":82.14,"credit":0.0,"is_credit":false,"transaction_type":"expense"},
+        {"operation_date":"2025-08-04","description":"Virement INTERAC TEST","amount":250.00,"debit":250.00,"credit":0.0,"is_credit":false,"transaction_type":"expense"},
+        {"operation_date":"2025-08-05","description":"Dépôt direct, CLIENT REFUND","amount":150.00,"debit":0.0,"credit":150.00,"is_credit":true,"transaction_type":"income"},
+        {"operation_date":"2025-08-06","description":"Frais de service mensuels","amount":12.00,"debit":12.00,"credit":0.0,"is_credit":false,"transaction_type":"expense"},
+        {"operation_date":"2025-08-08","description":"Virement en ligne, COMPTE ÉPARGNE","amount":1200.00,"debit":1200.00,"credit":0.0,"is_credit":false,"transaction_type":"transfer"},
+        {"operation_date":"2025-08-10","description":"Dépôt direct, TEST MEDICAL PAYMENT","amount":650.50,"debit":0.0,"credit":650.50,"is_credit":true,"transaction_type":"income"},
+        {"operation_date":"2025-08-11","description":"Achat par carte de débit, CAFÉ LOCAL","amount":14.75,"debit":14.75,"credit":0.0,"is_credit":false,"transaction_type":"expense"},
+        {"operation_date":"2025-08-12","description":"Achat par carte de débit, LIBRAIRIE ST-DENIS","amount":37.20,"debit":37.20,"credit":0.0,"is_credit":false,"transaction_type":"expense"},
+        {"operation_date":"2025-08-14","description":"Dépôt direct, AIDE GOUVERNEMENT","amount":400.00,"debit":0.0,"credit":400.00,"is_credit":true,"transaction_type":"income"},
+        {"operation_date":"2025-08-18","description":"Règl. de fact. en ligne, HYDRO TEST QC","amount":210.80,"debit":210.80,"credit":0.0,"is_credit":false,"transaction_type":"expense"},
+        {"operation_date":"2025-08-20","description":"Virement INTERAC reçu","amount":500.00,"debit":0.0,"credit":500.00,"is_credit":true,"transaction_type":"transfer"},
+        {"operation_date":"2025-08-22","description":"Prélèvement automatique, BELL CANADA","amount":95.50,"debit":95.50,"credit":0.0,"is_credit":false,"transaction_type":"expense"},
+        {"operation_date":"2025-08-25","description":"ÉPICERIE TEST MARKET MONTREAL QC","amount":67.30,"debit":67.30,"credit":0.0,"is_credit":false,"transaction_type":"expense"},
+        {"operation_date":"2025-08-29","description":"Dépôt direct, ENTREPRISE TEST INC PAYROLL","amount":3200.00,"debit":0.0,"credit":3200.00,"is_credit":true,"transaction_type":"income"},
+        {"operation_date":"2025-09-01","description":"Prélèvement automatique, HYDRO QC","amount":96.25,"debit":96.25,"credit":0.0,"is_credit":false,"transaction_type":"expense"},
+        {"operation_date":"2025-09-04","description":"Virement en ligne, COMPTE ÉPARGNE","amount":1200.00,"debit":1200.00,"credit":0.0,"is_credit":false,"transaction_type":"transfer"},
+        {"operation_date":"2025-09-07","description":"ESSO TEST STATION QC","amount":212.40,"debit":212.40,"credit":0.0,"is_credit":false,"transaction_type":"expense"},
+        {"operation_date":"2025-09-10","description":"Dépôt direct, ENTREPRISE TEST INC","amount":250.00,"debit":0.0,"credit":250.00,"is_credit":true,"transaction_type":"income"}
+      ]
+    }
+  ]
+}

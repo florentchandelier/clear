@@ -1,0 +1,13 @@
+{
+  "consolidated_statements": "consolidated_statements",
+  "custom_categories_path": "categories_custom.json",
+  "similarity_threshold": 80,
+  "min_cluster_tx": 1,
+  "single_tx_bucket": "OTHER_SMALL_CLUSTER",
+  "overwrite_duplicates": false,
+  "debug": false,
+  "log_level": "INFO",
+  "log_modules": [],
+  "display_currency": "CAD",
+  "fx_supported_currencies": ["CAD", "USD", "EUR"]
+}

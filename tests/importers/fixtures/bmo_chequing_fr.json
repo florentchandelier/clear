@@ -1,0 +1,137 @@
+{
+  "export_date": "2026-01-04",
+  "document_signature": {
+    "document_type": "BMO_CHEQUING_FRENCH"
+  },
+  "validation_passed": true,
+  "validation_message": "Debits and credits reconcile with statement totals.",
+  "account_summary": {
+    "account_id": "bmo_chequing_1234",
+    "account_name": "BMO Cash 1234",
+    "account_side": "asset",
+    "account_class": "cash",
+    "institution": "BMO",
+    "base_currency": "CAD",
+    "account_number": "1111111111",
+    "current_balance": {
+      "date": "2025-01-24",
+      "amount": 123456.12
+    },
+    "notes": "Chequing balance derived from statement (closing balance)."
+  },
+  "statements": [
+    {
+      "summary": {
+        "opening_balance": null,
+        "total_debits": 11.73,
+        "total_credits": 11.73,
+        "closing_balance": 123456.12,
+        "validation_passed": true,
+        "validation_message": "Debits and credits reconcile with statement totals.",
+        "statement_date": "2025-01-24"
+      },
+      "transactions": [
+        {
+          "operation_date": "2025-01-16",
+          "description": "Dépôt direct, 123123123123 dsfvdsfv",
+          "amount": 456.05,
+          "debit": 0.0,
+          "credit": 456.05,
+          "is_credit": true,
+          "transaction_type": "income"
+        },
+        {
+          "operation_date": "2025-01-17",
+          "description": "Dépôt direct, 123123123123 dsfvdsfv",
+          "amount": 123.78,
+          "debit": 0.0,
+          "credit": 123.78,
+          "is_credit": true,
+          "transaction_type": "income"
+        },
+        {
+          "operation_date": "2025-01-20",
+          "description": "Virement INTERAC envoyé",
+          "amount": -123.0,
+          "debit": 123.0,
+          "credit": 0.0,
+          "is_credit": false,
+          "transaction_type": "expense"
+        },
+        {
+          "operation_date": "2025-01-20",
+          "description": "Prélèvement automatique, aaaaa1",
+          "amount": -11.11,
+          "debit": 11.11,
+          "credit": 0.0,
+          "is_credit": false,
+          "transaction_type": "expense"
+        },
+        {
+          "operation_date": "2025-01-21",
+          "description": "Dépôt direct, wertr dgdsfg 45 ergg",
+          "amount": 304.44,
+          "debit": 0.0,
+          "credit": 304.44,
+          "is_credit": true,
+          "transaction_type": "income"
+        },
+        {
+          "operation_date": "2025-01-21",
+          "description": "Dépôt direct, wertr dgdsfg 45 ergg",
+          "amount": 324.59,
+          "debit": 0.0,
+          "credit": 324.59,
+          "is_credit": true,
+          "transaction_type": "income"
+        },
+        {
+          "operation_date": "2025-01-21",
+          "description": "Dépôt direct, 45 ergtewrf",
+          "amount": 681.53,
+          "debit": 0.0,
+          "credit": 681.53,
+          "is_credit": true,
+          "transaction_type": "income"
+        },
+        {
+          "operation_date": "2025-01-21",
+          "description": "Dépôt direct, 45 ergtewrf",
+          "amount": 123123.53,
+          "debit": 0.0,
+          "credit": 123123.53,
+          "is_credit": true,
+          "transaction_type": "income"
+        },
+        {
+          "operation_date": "2025-01-23",
+          "description": "Achat par carte de débit, rt RGBVFRVG",
+          "amount": -6.62,
+          "debit": 6.62,
+          "credit": 0.0,
+          "is_credit": false,
+          "transaction_type": "expense"
+        },
+        {
+          "operation_date": "2025-01-24",
+          "description": "Dépôt direct, ASFER EWRV",
+          "amount": 123.23,
+          "debit": 0.0,
+          "credit": 123.23,
+          "is_credit": true,
+          "transaction_type": "income"
+        },
+        {
+          "operation_date": "2025-01-24",
+          "description": "Virement en ligne, TF 123",
+          "amount": -123.55,
+          "debit": 123.55,
+          "credit": 0.0,
+          "is_credit": false,
+          "transaction_type": "transfer"
+        }
+      ],
+      "parent_account_id": "bmo_chequing_1234"
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-xxl">
+
+  <!-- Header + view toggle -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Accounts</h2>
+    <div class="btn-group" role="group" aria-label="View toggle">
+      <button id="btnOverview" type="button" class="btn btn-primary active">Overview</button>
+      <button id="btnManual" type="button" class="btn btn-outline-secondary">Manual Asset Management</button>
+    </div>
+  </div>
+
+  <!-- Flash message -->
+  <div class="d-flex justify-content-center mb-4">
+    <div id="balanceNotice"
+         class="alert alert-info py-2 px-3 small shadow-sm text-center"
+         role="alert"
+         style="display:inline-block; max-width: fit-content; white-space: nowrap;">
+      <i class="bi bi-info-circle me-1"></i>
+      Per-account snapshot of latest balances. Values reflect end-of-month positions and
+      <strong>reconcile with latest Net Worth</strong>.
+    </div>
+  </div>
+
+  <!-- Overview Section -->
+  <div id="overviewSection">
+    <div class="row g-4">
+
+      <!-- ========================= -->
+      <!-- ASSETS COLUMN -->
+      <!-- ========================= -->
+      <div class="col-lg-6">
+        <div class="card shadow-sm border-0 mb-3">
+          <div class="card-header bg-light fw-semibold">Assets</div>
+          <div class="card-body">
+
+            {% set assets_by_class = {} %}
+            {% for a in assets %}
+              {% set _ = assets_by_class.setdefault(a.account_class_label, []).append(a) %}
+            {% endfor %}
+
+            {% set assets_ns = namespace(total_fx=0) %}
+
+            {% if assets_by_class %}
+              {% for cls, accts in assets_by_class.items() %}
+
+                {% set ns = namespace(total_fx=0, currencies=[]) %}
+                {% for a in accts %}
+                  {% if a.latest_amount_fx is number %}
+                    {% set ns.total_fx = ns.total_fx + a.latest_amount_fx %}
+                    {% set assets_ns.total_fx = assets_ns.total_fx + a.latest_amount_fx %}
+                  {% endif %}
+                  {% if a.base_currency %}
+                    {% set _ = ns.currencies.append(a.base_currency) %}
+                  {% endif %}
+                {% endfor %}
+                {% set unique_currencies = ns.currencies | unique | list %}
+
+                <div class="card mb-3 border rounded-3 shadow-sm">
+                  <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center"
+                       role="button" data-bs-toggle="collapse"
+                       data-bs-target="#asset-class-{{ cls }}" aria-expanded="false">
+                    <span>{{ cls.replace('_',' ')|title }}</span>
+                    <span class="badge bg-secondary">{{ accts|length }} accounts</span>
+                  </div>
+
+                  <div id="asset-class-{{ cls }}" class="collapse show">
+                    <div class="card-body">
+                      <div class="row row-cols-1 row-cols-md-2 g-3">
+                        {% for a in accts %}
+                        <div class="col">
+                          <div class="p-3 border rounded-3 shadow-sm h-100">
+                            <div class="d-flex justify-content-between align-items-start">
+                              <div>
+                                <div class="fw-semibold">{{ a.name }}</div>
+                                <div class="text-muted small">{{ a.institution }}</div>
+                              </div>
+                              <div class="text-end">
+                                <div class="fw-semibold text-success">
+                                  {% if a.base_currency %}
+                                    <span class="text-muted small me-1">{{ a.base_currency }}</span>
+                                  {% endif %}
+                                  {{ a.latest_amount | money }}
+                                </div>
+                                {% if a.latest_date %}
+                                  <div class="text-muted small">
+                                    as of {{ a.latest_date | datetimeformat("%b %d, %Y") }}
+                                  </div>
+                                {% endif %}
+                              </div>
+                            </div>
+
+                            {% if a.child_accounts %}
+                              <div class="mt-2 small">
+                                <strong>Cardholders:</strong>
+                                <ul class="mb-0 ms-3">
+                                  {% for c in a.child_accounts %}
+                                    <li>{{ c.name }}</li>
+                                  {% endfor %}
+                                </ul>
+                              </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+
+                    <div class="card-footer bg-light small text-end text-muted">
+                      Current {{ cls.replace('_',' ')|title }} Balances
+                      {% if unique_currencies|length > 1 %}
+                        (converted from {{ unique_currencies | join(', ') }}):
+                      {% else %}
+                        :
+                      {% endif %}
+                      <span class="fw-semibold text-success">
+                        {{ display_currency }} {{ ns.total_fx | money }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+              {% endfor %}
+            {% else %}
+              <div class="text-muted">No asset accounts yet.</div>
+            {% endif %}
+          </div>
+
+          <div class="card-footer bg-light fw-semibold text-end">
+            Known Asset Balances:
+            <span class="text-success">
+              {{ display_currency }} {{ assets_ns.total_fx | money }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================= -->
+      <!-- LIABILITIES COLUMN -->
+      <!-- ========================= -->
+      <div class="col-lg-6">
+        <div class="card shadow-sm border-0 mb-3">
+          <div class="card-header bg-light fw-semibold">Liabilities</div>
+          <div class="card-body">
+
+            {% set liabilities_by_class = {} %}
+            {% for l in liabilities %}
+              {% set _ = liabilities_by_class.setdefault(l.account_class_label, []).append(l) %}
+            {% endfor %}
+
+            {% set liab_ns = namespace(total_fx=0) %}
+
+            {% if liabilities_by_class %}
+              {% for cls, accts in liabilities_by_class.items() %}
+
+                {% set ns = namespace(total_fx=0, currencies=[]) %}
+                {% for l in accts %}
+                  {% if l.latest_amount_fx is number %}
+                    {% set ns.total_fx = ns.total_fx + l.latest_amount_fx %}
+                    {% set liab_ns.total_fx = liab_ns.total_fx + l.latest_amount_fx %}
+                  {% endif %}
+                  {% if l.base_currency %}
+                    {% set _ = ns.currencies.append(l.base_currency) %}
+                  {% endif %}
+                {% endfor %}
+                {% set unique_currencies = ns.currencies | unique | list %}
+
+                <div class="card mb-3 border rounded-3 shadow-sm">
+                  <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center"
+                       role="button" data-bs-toggle="collapse"
+                       data-bs-target="#liab-class-{{ cls }}" aria-expanded="false">
+                    <span>{{ cls.replace('_',' ')|title }}</span>
+                    <span class="badge bg-secondary">{{ accts|length }} accounts</span>
+                  </div>
+
+                  <div id="liab-class-{{ cls }}" class="collapse show">
+                    <div class="card-body">
+                      <div class="row row-cols-1 row-cols-md-2 g-3">
+                        {% for l in accts %}
+                        <div class="col">
+                          <div class="p-3 border rounded-3 shadow-sm h-100">
+                            <div class="d-flex justify-content-between align-items-start">
+                              <div>
+                                <div class="fw-semibold">{{ l.name }}</div>
+                                <div class="text-muted small">{{ l.institution }}</div>
+                              </div>
+                              <div class="text-end">
+                                <div class="fw-semibold text-danger">
+                                  {% if l.base_currency %}
+                                    <span class="text-muted small me-1">{{ l.base_currency }}</span>
+                                  {% endif %}
+                                  {{ l.latest_amount | money }}
+                                </div>
+                                {% if l.latest_date %}
+                                  <div class="text-muted small">
+                                    as of {{ l.latest_date | datetimeformat("%b %d, %Y") }}
+                                  </div>
+                                {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+
+                    <div class="card-footer bg-light small text-end text-muted">
+                      Current {{ cls.replace('_',' ')|title }} Balances
+                      {% if unique_currencies|length > 1 %}
+                        (converted from {{ unique_currencies | join(', ') }}):
+                      {% else %}
+                        :
+                      {% endif %}
+                      <span class="fw-semibold text-danger">
+                        {{ display_currency }} {{ ns.total_fx | money }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+              {% endfor %}
+            {% else %}
+              <div class="text-muted">No liability accounts yet.</div>
+            {% endif %}
+          </div>
+
+          <div class="card-footer bg-light fw-semibold text-end">
+            Known Liability Balances:
+            <span class="text-danger">
+              {{ display_currency }} {{ liab_ns.total_fx | money }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

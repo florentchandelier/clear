@@ -1,0 +1,17 @@
+{
+  "export_date": "2025-10-08 12:11:17",
+  "document_signature": { "document_type": "MANUAL_ASSET_VALUE" },
+  "account_summary": {
+    "account_id": "CAR-0001",
+    "account_name": "Voiture personnelle test",
+    "institution": "Manual Entry",
+    "account_side": "asset",
+    "account_class": "car_fmv",
+    "base_currency": "CAD"
+  },
+  "nav_snapshots": [
+    { "date": "2025-04-30", "nav": 5000.00 }
+  ],
+  "validation_passed": true,
+  "validation_message": "Manual car asset value recorded successfully."
+}

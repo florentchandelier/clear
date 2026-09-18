@@ -1,0 +1,73 @@
+<!-- app/web/templates/dashboard/expense.html -->
+<div id="view-spending" class="dashboard-view d-none">
+
+  <div class="row g-3">
+    <div class="col-12 col-xl-8">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h6 mb-0">Spending (Consumption) by month</h2>
+            <span class="text-muted small" id="selectedYearLabel"></span>
+          </div>
+          <div class="text-muted small mb-2">
+            Lifestyle only —
+            excludes transfers, savings, and taxes.
+          </div>
+          <div class="chart-box">
+            <canvas id="monthlyChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h6 mb-0">Top <span id="viewLabel">categories</span></h2>
+            <span class="text-muted small" id="topYearLabel"></span>
+          </div>
+          <div class="chart-box">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mt-1">
+    <div class="col-12 col-xl-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h6 mb-3">Top 10 <span id="tableLabel">categories</span></h2>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th id="colLabel">Category</th>
+                  <th class="text-end">Total</th>
+                </tr>
+              </thead>
+              <tbody id="topCategoriesBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h6 mb-0">Category Breakdown (Stacked)</h2>
+            <span class="text-muted small">by subcategory/type</span>
+          </div>
+          <div class="chart-box">
+            <canvas id="stackedSpendingChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h1 class="h4 mb-0">Select Transactions for Seeds</h1>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} mt-2">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<form method="get" action="{{ url_for('categories.transactions_for_month') }}" class="row g-2 mb-3 align-items-end" id="filter_form">
+  <div class="col-3 col-md-2">
+    <select name="year" id="yearSelect" class="form-select" required></select>
+  </div>
+  <div class="col-3 col-md-2">
+    <select name="month" id="monthSelect" class="form-select" required>
+      {% for m in range(1,13) %}
+        <option value="{{ m }}" {% if month and month|int == m %}selected{% endif %}>
+          {{ ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m-1] }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-6 col-md-3">
+    <select id="catSel" name="category" class="form-select" required></select>
+  </div>
+  <div class="col-6 col-md-3">
+    <select id="subSel" name="subcategory" class="form-select">
+      <option value="">-- None --</option>
+    </select>
+  </div>
+  <div class="col-6 col-md-2">
+    <select id="typeSel" name="type" class="form-select">
+      <option value="">-- None --</option>
+    </select>
+  </div>
+</form>
+
+{% if transactions is not none and transactions.shape[0] > 0 %}
+<form method="post" action="{{ url_for('categories.add_seed') }}" id="add_seed_form">
+  <input type="hidden" name="year" value="{{ year }}">
+  <input type="hidden" name="month" value="{{ month }}">
+  <input type="hidden" name="category" id="hs_category" value="{{ selected_category }}">
+  <input type="hidden" name="subcategory" id="hs_subcategory" value="{{ selected_subcategory }}">
+  <input type="hidden" name="type" id="hs_type" value="{{ selected_type }}">
+
+  <div class="alert alert-secondary">
+    Seeds will be added to: <strong id="target_path_preview"></strong>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-sm table-striped align-middle">
+      <thead class="table-light">
+        <tr>
+          <th style="width:60px;">Pick</th>
+          <th>Transaction ID</th>
+          <th>Date</th>
+          <th>Description</th>
+          <th class="text-end">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for tx in transactions.itertuples() %}
+        <tr>
+          <td>
+            <input type="checkbox" class="form-check-input seed-checkbox"
+                   name="seed_data[]"
+                   value="{{ tx.transaction_id }}||{{ tx.description|replace('||',' ') }}"
+                   data-transaction-id="{{ tx.transaction_id }}">
+          </td>
+          <td class="small text-break">{{ tx.transaction_id }}</td>
+          <td>{{ tx.operation_date or tx.posted_date }}</td>
+          <td>{{ tx.description }}</td>
+          <td class="text-end">{{ ('%.2f' % (tx.amount or 0.0)) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <button type="submit" class="btn btn-success">Add Selected as Seeds</button>
+</form>
+{% elif year and month %}
+  <p class="text-muted">No transactions found for {{ year }}-{{ "%02d"|format(month|int) }}.</p>
+{% endif %}
+
+<a href="{{ url_for('categories.manage_categories') }}" class="btn btn-link mt-3">Back to Categories</a>
+
+<script>
+  window.__CATEGORIES__ = {{ categories|tojson }};
+  window.__EXISTING_SEEDS__ = {{ existing_seeds|tojson }};
+  window.__INITIAL__ = {
+    cat: {{ (selected_category or '')|tojson }},
+    sub: {{ (selected_subcategory or '')|tojson }},
+    typ: {{ (selected_type or '')|tojson }}
+  };
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const cats = window.__CATEGORIES__ || {};
+  const existingSeeds = new Set(window.__EXISTING_SEEDS__ || []);
+  const INITIAL = window.__INITIAL__ || {cat:"", sub:"", typ:""};
+
+  const form = document.getElementById("filter_form");
+  const yearSelect = document.getElementById("yearSelect");
+  const monthSelect = document.getElementById("monthSelect");
+  const catSel = document.getElementById("catSel");
+  const subSel = document.getElementById("subSel");
+  const typeSel = document.getElementById("typeSel");
+
+  const hsCategory = document.getElementById("hs_category");
+  const hsSubcategory = document.getElementById("hs_subcategory");
+  const hsType = document.getElementById("hs_type");
+  const targetPreview = document.getElementById("target_path_preview");
+  const checkboxes = document.querySelectorAll(".seed-checkbox");
+
+  const isMap = (x) => x && typeof x === "object" && !Array.isArray(x);
+  const childKeys = (obj) => Object.keys(obj || {}).filter(k => k !== "_seeds" && isMap(obj[k]));
+
+  function resetSelect(sel, placeholder="-- None --") {
+    sel.innerHTML = "";
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.text = placeholder;
+    sel.appendChild(opt);
+  }
+
+  let t = null;
+  function maybeSubmit() {
+    if (!yearSelect.value || !monthSelect.value) return;
+    if (t) clearTimeout(t);
+    t = setTimeout(() => form.submit(), 120);
+  }
+
+  // Populate years dynamically
+  async function populateYears() {
+    try {
+      const res = await fetch("/api/transactions/years");
+      const years = await res.json();
+      if (!Array.isArray(years) || !years.length) return;
+
+      yearSelect.innerHTML = years.map(y =>
+        `<option value="${y}" ${y == {{ year or "null" }} ? "selected" : ""}>${y}</option>`
+      ).join("");
+    } catch (e) {
+      console.error("Failed to fetch years", e);
+    }
+  }
+
+  function populateCats() {
+    catSel.innerHTML = "";
+    const ks = Object.keys(cats).filter(k => k !== "_seeds" && isMap(cats[k]));
+    ks.forEach(k => {
+      const o = document.createElement("option");
+      o.value = o.text = k;
+      catSel.appendChild(o);
+    });
+    if (INITIAL.cat && ks.includes(INITIAL.cat)) {
+      catSel.value = INITIAL.cat;
+    } else if (ks.length) {
+      catSel.value = ks[0];
+    }
+  }
+
+  function populateSubs() {
+    resetSelect(subSel);
+    resetSelect(typeSel);
+    const node = cats[catSel.value];
+    if (!isMap(node)) return;
+    const subs = childKeys(node);
+    subs.forEach(s => {
+      const o = document.createElement("option");
+      o.value = o.text = s;
+      subSel.appendChild(o);
+    });
+    if (INITIAL.sub && subs.includes(INITIAL.sub)) subSel.value = INITIAL.sub;
+  }
+
+  function populateTypes() {
+    resetSelect(typeSel);
+    const node = cats?.[catSel.value]?.[subSel.value];
+    if (!isMap(node)) return;
+    const types = childKeys(node);
+    types.forEach(t => {
+      const o = document.createElement("option");
+      o.value = o.text = t;
+      typeSel.appendChild(o);
+    });
+    if (INITIAL.typ && types.includes(INITIAL.typ)) typeSel.value = INITIAL.typ;
+  }
+
+  function updatePreview() {
+    const parts = [catSel.value || "(none)", subSel.value || "(none)", typeSel.value || "(none)"];
+    if (targetPreview) targetPreview.textContent = parts.join(" / ");
+    if (hsCategory) hsCategory.value = catSel.value || "";
+    if (hsSubcategory) hsSubcategory.value = subSel.value || "";
+    if (hsType) hsType.value = typeSel.value || "";
+  }
+
+  function markExisting() {
+    checkboxes.forEach(cb => cb.checked = existingSeeds.has(cb.dataset.transactionId));
+  }
+
+  await populateYears();
+  populateCats();
+  populateSubs();
+  populateTypes();
+  updatePreview();
+  markExisting();
+
+  // Event listeners for changes
+  catSel.addEventListener("change", () => {
+    INITIAL.sub = ""; INITIAL.typ = "";
+    populateSubs(); populateTypes(); updatePreview(); maybeSubmit();
+  });
+  subSel.addEventListener("change", () => {
+    INITIAL.typ = "";
+    populateTypes(); updatePreview(); maybeSubmit();
+  });
+  typeSel.addEventListener("change", () => { updatePreview(); maybeSubmit(); });
+  yearSelect.addEventListener("change", maybeSubmit);
+  monthSelect.addEventListener("change", maybeSubmit);
+});
+</script>
+{% endblock %}

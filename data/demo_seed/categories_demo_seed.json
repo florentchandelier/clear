@@ -1,0 +1,661 @@
+{
+  "_seeds": [],
+  "_deleted": [],
+  "housing": {
+    "_seeds": [],
+    "_deleted": [],
+    "rent": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "mortgage": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "property_taxes": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "utilities": {
+      "_seeds": [],
+      "_deleted": [],
+      "gas": {
+        "_seeds": [],
+        "_deleted": []
+      },
+      "electricity": {
+        "_seeds": [],
+        "_deleted": []
+      },
+      "water": {
+        "_seeds": [],
+        "_deleted": []
+      },
+      "unsubcategorized": {
+        "_seeds": [
+          {
+            "description": "telus pre-auth",
+            "added_at": "2026-09-03T13:10:38.410801+00:00",
+            "transaction_id": "6d3930a60ad14668"
+          },
+          {
+            "description": "videotron ltee qc",
+            "added_at": "2026-09-03T13:10:38.410805+00:00",
+            "corrected_to": {
+              "category": "housing",
+              "subcategory": "utilities",
+              "type": "unsubcategorized"
+            },
+            "authoritative": true
+          },
+          {
+            "description": "prélèvement automatique, hydro qc",
+            "added_at": "2026-09-03T13:10:38.410820+00:00",
+            "transaction_id": "fc83fcca512dff68"
+          },
+          {
+            "description": "règl. de fact. en ligne, hydro test qc",
+            "added_at": "2026-09-03T13:10:38.410852+00:00",
+            "corrected_to": {
+              "category": "housing",
+              "subcategory": "utilities",
+              "type": "unsubcategorized"
+            },
+            "transaction_id": "89f2a20ecd0ef7e0"
+          },
+          {
+            "description": "prélèvement automatique, bell canada",
+            "added_at": "2026-09-03T13:10:38.410859+00:00",
+            "transaction_id": "ccc30ef0a7b40dee"
+          },
+          {
+            "description": "prélèvement automatique, hydro qc",
+            "added_at": "2026-09-03T13:10:38.410873+00:00"
+          }
+        ],
+        "_deleted": []
+      }
+    },
+    "insurance": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "maintenance_repairs": {
+      "_seeds": [],
+      "_deleted": [],
+      "unsubcategorized": {
+        "_seeds": [
+          {
+            "description": "the home depot qc fuzzy",
+            "added_at": "2026-09-03T13:10:38.410796+00:00",
+            "transaction_id": "5433f9953ad712b5"
+          },
+          {
+            "description": "rona+ ndg qc",
+            "added_at": "2026-09-03T13:10:38.410807+00:00",
+            "corrected_to": {
+              "category": "housing",
+              "subcategory": "maintenance_repairs",
+              "type": "unsubcategorized"
+            },
+            "authoritative": true,
+            "transaction_id": "4fb03432df607fba"
+          }
+        ],
+        "_deleted": []
+      }
+    },
+    "furniture_appliances": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "connectivity": {
+      "_seeds": [],
+      "_deleted": [],
+      "internet": {
+        "_seeds": [],
+        "_deleted": []
+      },
+      "mobile_phone": {
+        "_seeds": [],
+        "_deleted": []
+      },
+      "home_security": {
+        "_seeds": [],
+        "_deleted": []
+      }
+    }
+  },
+  "transportation": {
+    "_seeds": [],
+    "_deleted": [],
+    "auto_purchase_lease": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "fuel": {
+      "_seeds": [],
+      "_deleted": [],
+      "unsubcategorized": {
+        "_seeds": [
+          {
+            "description": "esso couche-tard 555 qc",
+            "added_at": "2026-09-03T13:10:38.410779+00:00",
+            "corrected_to": {
+              "category": "transportation",
+              "subcategory": "fuel",
+              "type": "unsubcategorized"
+            },
+            "authoritative": true,
+            "transaction_id": "905729ce04417c49"
+          },
+          {
+            "description": "esso test station qc",
+            "added_at": "2026-09-03T13:10:38.410803+00:00",
+            "corrected_to": {
+              "category": "transportation",
+              "subcategory": "fuel",
+              "type": "unsubcategorized"
+            },
+            "transaction_id": "f594812c722ae3e8"
+          },
+          {
+            "description": "esso test station qc",
+            "added_at": "2026-09-03T13:10:38.410880+00:00",
+            "corrected_to": {
+              "category": "transportation",
+              "subcategory": "fuel",
+              "type": "unsubcategorized"
+            },
+            "authoritative": true,
+            "transaction_id": "cfebf010c99156d5"
+          }
+        ],
+        "_deleted": []
+      }
+    },
+    "maintenance_repairs": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "insurance": {
+      "_seeds": [],
+      "_deleted": [],
+      "unsubcategorized": {
+        "_seeds": [
+          {
+            "description": "insurance payment",
+            "added_at": "2026-09-03T13:10:38.410869+00:00",
+            "transaction_id": "d3c39f2dba262b15"
+          }
+        ],
+        "_deleted": []
+      }
+    },
+    "parking_tolls": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "public_transit_rideshare": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "traffic_fines": {
+      "_seeds": [],
+      "_deleted": []
+    }
+  },
+  "health_wellness": {
+    "_seeds": [],
+    "_deleted": [],
+    "insurance": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "medical_care": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "pharmacy": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "dental_vision": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "fitness": {
+      "_seeds": [],
+      "_deleted": []
+    }
+  },
+  "food_daily": {
+    "_seeds": [],
+    "_deleted": [],
+    "groceries": {
+      "_seeds": [],
+      "_deleted": [],
+      "unsubcategorized": {
+        "_seeds": [
+          {
+            "description": "iga 001 montréal qc",
+            "added_at": "2026-09-03T13:10:38.410777+00:00",
+            "transaction_id": "a2c30c08c800058a"
+          },
+          {
+            "description": "metro st-denis qc",
+            "added_at": "2026-09-03T13:10:38.410785+00:00",
+            "corrected_to": {
+              "category": "food_daily",
+              "subcategory": "groceries",
+              "type": "unsubcategorized"
+            },
+            "authoritative": true,
+            "transaction_id": "03db01ffe1789658"
+          },
+          {
+            "description": "épicerie test market montreal qc fuzzy",
+            "added_at": "2026-09-03T13:10:38.410789+00:00",
+            "corrected_to": {
+              "category": "food_daily",
+              "subcategory": "groceries",
+              "type": "unsubcategorized"
+            },
+            "authoritative": true
+          },
+          {
+            "description": "achat par carte de débit, épicerie test market montreal qcc",
+            "added_at": "2026-09-03T13:10:38.410824+00:00",
+            "transaction_id": "dfbba6b239b15479"
+          },
+          {
+            "description": "épicerie test market montreal qc",
+            "added_at": "2026-09-03T13:10:38.410862+00:00",
+            "corrected_to": {
+              "category": "food_daily",
+              "subcategory": "groceries",
+              "type": "unsubcategorized"
+            },
+            "authoritative": true,
+            "transaction_id": "07fffcf1e9f2aa13"
+          }
+        ],
+        "_deleted": []
+      }
+    },
+    "household_supplies": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "alcohol": {
+      "_seeds": [],
+      "_deleted": []
+    }
+  },
+  "education": {
+    "_seeds": [],
+    "_deleted": [],
+    "tuition": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "books_materials": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "courses_certifications": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "childcare_daycare": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "student_loan_payments": {
+      "_seeds": [],
+      "_deleted": []
+    }
+  },
+  "leisure": {
+    "_seeds": [],
+    "_deleted": [],
+    "vacations": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "restaurants": {
+      "_seeds": [],
+      "_deleted": [],
+      "unsubcategorized": {
+        "_seeds": [
+          {
+            "description": "café central qc",
+            "added_at": "2026-09-03T13:10:38.410770+00:00",
+            "corrected_to": {
+              "category": "leisure",
+              "subcategory": "restaurants",
+              "type": "unsubcategorized"
+            },
+            "authoritative": true,
+            "transaction_id": "3555632a7f25ce92"
+          },
+          {
+            "description": "restaurant le test qc",
+            "added_at": "2026-09-03T13:10:38.410782+00:00",
+            "corrected_to": {
+              "category": "leisure",
+              "subcategory": "restaurants",
+              "type": "unsubcategorized"
+            },
+            "authoritative": true
+          },
+          {
+            "description": "café test local",
+            "added_at": "2026-09-03T13:10:38.410812+00:00",
+            "corrected_to": {
+              "category": "leisure",
+              "subcategory": "restaurants",
+              "type": "unsubcategorized"
+            },
+            "authoritative": true,
+            "transaction_id": "5b49479d69b12ec3"
+          },
+          {
+            "description": "achat par carte de débit, café local",
+            "added_at": "2026-09-03T13:10:38.410841+00:00",
+            "corrected_to": {
+              "category": "leisure",
+              "subcategory": "restaurants",
+              "type": "unsubcategorized"
+            },
+            "authoritative": true,
+            "transaction_id": "cf42ec58e6a49653"
+          }
+        ],
+        "_deleted": []
+      }
+    },
+    "entertainment": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "hobbies": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "gifts_celebrations": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "streaming": {
+      "_seeds": [],
+      "_deleted": []
+    }
+  },
+  "work_income": {
+    "_seeds": [],
+    "_deleted": [],
+    "salary": {
+      "_seeds": [],
+      "_deleted": [],
+      "unsubcategorized": {
+        "_seeds": [
+          {
+            "description": "chu testville qc",
+            "added_at": "2026-09-03T13:10:38.410799+00:00",
+            "transaction_id": "34a9405d0c266c6c"
+          },
+          {
+            "description": "dépôt direct, aide gouvernement",
+            "added_at": "2026-09-03T13:10:38.410849+00:00",
+            "transaction_id": "b62985d7cc3fcbb9"
+          },
+          {
+            "description": "dépôt direct, entreprise test inc payroll",
+            "added_at": "2026-09-03T13:10:38.410866+00:00",
+            "corrected_to": {
+              "category": "work_income",
+              "subcategory": "salary",
+              "type": "unsubcategorized"
+            },
+            "transaction_id": "fd0ba476d61fca58"
+          },
+          {
+            "description": "dépôt direct, entreprise test inc",
+            "added_at": "2026-09-03T13:10:38.410882+00:00",
+            "corrected_to": {
+              "category": "work_income",
+              "subcategory": "salary",
+              "type": "unsubcategorized"
+            },
+            "transaction_id": "194af6fe6d92a060"
+          }
+        ],
+        "_deleted": []
+      }
+    },
+    "business_income": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "side_hustles": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "taxes": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "professional_expenses": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "lunch_dining": {
+      "_seeds": [],
+      "_deleted": []
+    }
+  },
+  "savings_investments": {
+    "_seeds": [],
+    "_deleted": [],
+    "emergency_fund": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "retirement": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "education_savings": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "working_capital": {
+      "_seeds": [],
+      "_deleted": []
+    }
+  },
+  "misc": {
+    "_seeds": [],
+    "_deleted": [],
+    "donations": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "legal_financial": {
+      "_seeds": [],
+      "_deleted": [],
+      "bank_fees": {
+        "_seeds": [],
+        "_deleted": []
+      }
+    },
+    "misc_purchases": {
+      "_seeds": [],
+      "_deleted": [],
+      "unsubcategorized": {
+        "_seeds": [
+          {
+            "description": "pharmaprix #1001 qc",
+            "added_at": "2026-09-03T13:10:38.410765+00:00",
+            "corrected_to": {
+              "category": "misc",
+              "subcategory": "misc_purchases",
+              "type": "unsubcategorized"
+            },
+            "authoritative": true
+          },
+          {
+            "description": "amzn mktp ca*test123",
+            "added_at": "2026-09-03T13:10:38.410773+00:00",
+            "corrected_to": {
+              "category": "misc",
+              "subcategory": "misc_purchases",
+              "type": "unsubcategorized"
+            },
+            "transaction_id": "424e7076626f07a3"
+          }
+        ],
+        "_deleted": []
+      }
+    }
+  },
+  "lifestyle": {
+    "_seeds": [],
+    "_deleted": [],
+    "clothing": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "beauty": {
+      "_seeds": [],
+      "_deleted": []
+    },
+    "digital": {
+      "_seeds": [],
+      "_deleted": []
+    }
+  },
+  "uncategorized": {
+    "_seeds": [],
+    "_deleted": [],
+    "__default__": {
+      "_seeds": [],
+      "_deleted": [],
+      "__default__": {
+        "_seeds": [
+          {
+            "description": "marché bio local qc fuzzy",
+            "added_at": "2026-09-03T13:10:38.410748+00:00",
+            "corrected_to": {
+              "category": "uncategorized",
+              "subcategory": "__default__",
+              "type": "__default__"
+            },
+            "authoritative": true,
+            "transaction_id": "01b0f4edb15a800b"
+          },
+          {
+            "description": "frais intérêt",
+            "added_at": "2026-09-03T13:10:38.410793+00:00"
+          },
+          {
+            "description": "uber trip mtl qc",
+            "added_at": "2026-09-03T13:10:38.410810+00:00",
+            "corrected_to": {
+              "category": "uncategorized",
+              "subcategory": "__default__",
+              "type": "__default__"
+            },
+            "transaction_id": "6d695b9dd2e4ca9c"
+          },
+          {
+            "description": "trsf from acct 1234-001",
+            "added_at": "2026-09-03T13:10:38.410815+00:00",
+            "corrected_to": {
+              "category": "uncategorized",
+              "subcategory": "__default__",
+              "type": "__default__"
+            },
+            "transaction_id": "04e19377dc8f0c43"
+          },
+          {
+            "description": "virement interac test",
+            "added_at": "2026-09-03T13:10:38.410817+00:00",
+            "transaction_id": "d8ef17da2aa7fbf3"
+          },
+          {
+            "description": "virement interac test",
+            "added_at": "2026-09-03T13:10:38.410826+00:00",
+            "corrected_to": {
+              "category": "uncategorized",
+              "subcategory": "__default__",
+              "type": "__default__"
+            },
+            "transaction_id": "099933d5a99a6eec"
+          },
+          {
+            "description": "dépôt direct, client refund",
+            "added_at": "2026-09-03T13:10:38.410828+00:00",
+            "corrected_to": {
+              "category": "uncategorized",
+              "subcategory": "__default__",
+              "type": "__default__"
+            },
+            "transaction_id": "4d30cf89ba9e07b3"
+          },
+          {
+            "description": "frais de service mensuels",
+            "added_at": "2026-09-03T13:10:38.410830+00:00",
+            "corrected_to": {
+              "category": "uncategorized",
+              "subcategory": "__default__",
+              "type": "__default__"
+            },
+            "transaction_id": "fbecc594ec443796"
+          },
+          {
+            "description": "virement en ligne, compte épargne",
+            "added_at": "2026-09-03T13:10:38.410834+00:00",
+            "transaction_id": "017b40c2fbd92e7f"
+          },
+          {
+            "description": "dépôt direct, test medical payment",
+            "added_at": "2026-09-03T13:10:38.410838+00:00",
+            "corrected_to": {
+              "category": "uncategorized",
+              "subcategory": "__default__",
+              "type": "__default__"
+            }
+          },
+          {
+            "description": "achat par carte de débit, librairie st-denis",
+            "added_at": "2026-09-03T13:10:38.410846+00:00",
+            "corrected_to": {
+              "category": "uncategorized",
+              "subcategory": "__default__",
+              "type": "__default__"
+            },
+            "transaction_id": "812e05f004168fea"
+          },
+          {
+            "description": "virement interac reçu",
+            "added_at": "2026-09-03T13:10:38.410855+00:00",
+            "corrected_to": {
+              "category": "uncategorized",
+              "subcategory": "__default__",
+              "type": "__default__"
+            },
+            "transaction_id": "aecacb3d3db741e9"
+          },
+          {
+            "description": "virement en ligne, compte épargne",
+            "added_at": "2026-09-03T13:10:38.410877+00:00",
+            "transaction_id": "81c7fea774e000bc"
+          }
+        ],
+        "_deleted": []
+      }
+    }
+  }
+}

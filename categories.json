@@ -1,0 +1,480 @@
+{
+  "housing": {
+    "rent": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "mortgage": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "property_taxes": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": false,
+        "include_in_cash_flow": true
+      }
+    },
+    "utilities": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      },
+      "gas": {
+        "_seeds": [],
+        "_flags": {
+          "include_in_spending": true,
+          "include_in_cash_flow": true
+        }
+      },
+      "electricity": {
+        "_seeds": [],
+        "_flags": {
+          "include_in_spending": true,
+          "include_in_cash_flow": true
+        }
+      },
+      "water": {
+        "_seeds": [],
+        "_flags": {
+          "include_in_spending": true,
+          "include_in_cash_flow": true
+        }
+      }
+    },
+    "insurance": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "maintenance_repairs": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "furniture_appliances": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "connectivity": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      },
+      "internet": {
+        "_seeds": [],
+        "_flags": {
+          "include_in_spending": true,
+          "include_in_cash_flow": true
+        }
+      },
+      "mobile_phone": {
+        "_seeds": [],
+        "_flags": {
+          "include_in_spending": true,
+          "include_in_cash_flow": true
+        }
+      },
+      "home_security": {
+        "_seeds": [],
+        "_flags": {
+          "include_in_spending": true,
+          "include_in_cash_flow": true
+        }
+      }
+    },
+    "_seeds": [],
+    "_flags": {
+      "include_in_spending": true,
+      "include_in_cash_flow": true
+    }
+  },
+  "transportation": {
+    "auto_purchase_lease": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "fuel": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "maintenance_repairs": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "insurance": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "parking_tolls": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "public_transit_rideshare": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "traffic_fines": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "_seeds": [],
+    "_flags": {
+      "include_in_spending": true,
+      "include_in_cash_flow": true
+    }
+  },
+  "health_wellness": {
+    "insurance": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "medical_care": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "pharmacy": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "dental_vision": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "fitness": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "_seeds": [],
+    "_flags": {
+      "include_in_spending": true,
+      "include_in_cash_flow": true
+    }
+  },
+  "food_daily": {
+    "groceries": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "household_supplies": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "alcohol": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "_seeds": [],
+    "_flags": {
+      "include_in_spending": true,
+      "include_in_cash_flow": true
+    }
+  },
+  "education": {
+    "tuition": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "books_materials": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "courses_certifications": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "childcare_daycare": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "student_loan_payments": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "_seeds": [],
+    "_flags": {
+      "include_in_spending": true,
+      "include_in_cash_flow": true
+    }
+  },
+  "leisure": {
+    "vacations": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "restaurants": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "entertainment": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "hobbies": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "gifts_celebrations": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "streaming": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "_seeds": [],
+    "_flags": {
+      "include_in_spending": true,
+      "include_in_cash_flow": true
+    }
+  },
+  "work_income": {
+    "salary": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "business_income": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "side_hustles": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "taxes": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": false,
+        "include_in_cash_flow": true
+      }
+    },
+    "professional_expenses": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": false,
+        "include_in_cash_flow": true
+      }
+    },
+    "lunch_dining": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "_seeds": [],
+    "_flags": {
+      "include_in_spending": true,
+      "include_in_cash_flow": true
+    }
+  },
+  "savings_investments": {
+    "emergency_fund": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": false,
+        "include_in_cash_flow": false
+      }
+    },
+    "retirement": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": false,
+        "include_in_cash_flow": false
+      }
+    },
+    "education_savings": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": false,
+        "include_in_cash_flow": false
+      }
+    },
+    "working_capital": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": false,
+        "include_in_cash_flow": false
+      }
+    },
+    "_seeds": [],
+    "_flags": {
+      "include_in_spending": true,
+      "include_in_cash_flow": true,
+      "_flags": {
+        "include_in_spending": false,
+        "include_in_cash_flow": false
+      }
+    }
+  },
+  "misc": {
+    "donations": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": false,
+        "include_in_cash_flow": true
+      }
+    },
+    "legal_financial": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      },
+      "bank_fees": {
+        "_seeds": [],
+        "_flags": {
+          "include_in_spending": true,
+          "include_in_cash_flow": true
+        }
+      }
+    },
+    "misc_purchases": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "_seeds": [],
+    "_flags": {
+      "include_in_spending": true,
+      "include_in_cash_flow": true
+    }
+  },
+  "lifestyle": {
+    "clothing": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "beauty": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "digital": {
+      "_seeds": [],
+      "_flags": {
+        "include_in_spending": true,
+        "include_in_cash_flow": true
+      }
+    },
+    "_seeds": [],
+    "_flags": {
+      "include_in_spending": true,
+      "include_in_cash_flow": true
+    }
+  },
+  "_seeds": [],
+  "_flags": {
+    "include_in_spending": true,
+    "include_in_cash_flow": true
+  }
+}

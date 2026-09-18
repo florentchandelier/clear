@@ -1,0 +1,95 @@
+{
+  "insurance": [
+    "housing/insurance",
+    "transportation/insurance",
+    "health_wellness/insurance",
+    "housing/connectivity/home_security"
+  ],
+  "debt": [
+    "housing/mortgage",
+    "transportation/auto_purchase_lease",
+    "education/student_loan_payments"
+  ],
+  "savings": [
+    "savings_investments/emergency_fund",
+    "savings_investments/retirement",
+    "savings_investments/education_savings",
+    "savings_investments/working_capital"
+  ],
+  "food": [
+    "food_daily/groceries",
+    "leisure/restaurants",
+    "work_income/lunch_dining",
+    "food_daily/alcohol"
+  ],
+  "household": [
+    "food_daily/household_supplies",
+    "lifestyle/clothing",
+    "lifestyle/beauty"
+  ],
+  "healthcare": [
+    "health_wellness/medical_care",
+    "health_wellness/pharmacy",
+    "health_wellness/dental_vision",
+    "health_wellness/fitness",
+    "health_wellness/other"
+  ],
+  "transport": [
+    "transportation/fuel",
+    "transportation/maintenance_repairs",
+    "transportation/parking_tolls",
+    "transportation/public_transit_rideshare",
+    "transportation/traffic_fines",
+    "transportation/other"
+  ],
+  "housing_total": [
+    "housing/rent",
+    "housing/mortgage",
+    "housing/property_taxes",
+    "housing/utilities",
+    "housing/insurance",
+    "housing/maintenance_repairs",
+    "housing/furniture_appliances",
+    "housing/connectivity/internet",
+    "housing/connectivity/mobile_phone",
+    "housing/connectivity/home_security"
+  ],
+  "education": [
+    "education/tuition",
+    "education/books_materials",
+    "education/courses_certifications",
+    "education/childcare_daycare",
+    "education/student_loan_payments"
+  ],
+  "leisure": [
+    "leisure/vacations",
+    "leisure/entertainment",
+    "leisure/hobbies",
+    "leisure/gifts_celebrations",
+    "leisure/streaming"
+  ],
+  "income": [
+    "work_income/salary",
+    "work_income/business_income",
+    "work_income/side_hustles",
+    "work_income/taxes",
+    "work_income/professional_expenses"
+  ],
+  "giving": [
+    "misc/donations"
+  ],
+  "admin": [
+    "misc/legal_financial",
+    "misc/legal_financial/bank_fees"
+  ],
+  "misc": [
+    "misc/misc_purchases"
+  ],
+  "subscription": [
+    "leisure/streaming",
+    "housing/connectivity/internet",
+    "housing/connectivity/mobile_phone",
+    "housing/connectivity/home_security",
+    "lifestyle/digital"
+  ]
+}
