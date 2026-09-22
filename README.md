@@ -240,13 +240,21 @@ Every relevant query extends these definitions rather than reimplementing its ow
 
 Transaction IDs are deterministic.
 
-Each ID is generated using a SHA256 hash of:
+The first occurrence of a transaction is identified by a 16-character prefix
+of a SHA256 hash of:
 
 * source statement
-* cardholder
+* account
+* operation date
 * description
-* amount
-* date
+* raw amount
+* transaction type
+
+If a statement contains multiple otherwise-identical transactions, the first
+keeps that legacy ID and each later occurrence receives a deterministic ID
+derived from the legacy ID and its occurrence ordinal. Before writing, CLEAR
+requires every extracted transaction to have one non-empty, unique ID; after
+writing, it verifies that the persisted row count matches the extracted count.
 
 This means re-importing the same statement does not create duplicate transactions.
 

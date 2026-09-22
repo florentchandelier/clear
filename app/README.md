@@ -1,7 +1,7 @@
 # 🪙 CLEAR — `app/`
 
 A modular, Python-based **personal finance management system** that normalizes, categorizes, and analyzes financial data stored in **Parquet**.
-It supports **PDF and JSON imports**, **automatic categorization**, **hierarchical tagging**, and a full **Flask web UI** for visualization.
+It supports **PDF statement imports**, **automatic categorization**, **hierarchical tagging**, and a full **Flask web UI** for visualization. Importers convert PDFs to structured JSON internally; the synthetic demo builder can ingest tracked importer-JSON seed files directly.
 
 This is the architecture reference for the `app/` package. For install/run
 instructions, the demo dataset, and contributing, see the
@@ -16,7 +16,7 @@ The app processes raw financial statements (banking, credit, or investment) into
 
 | Stage | Module | Purpose |
 |-------|---------|----------|
-| **1. Importers** | `app/services/importers/` | Parse raw documents (PDF/JSON) into structured schema. |
+| **1. Importers** | `app/services/importers/` | Parse PDF statements into the structured importer schema. |
 | **2. Normalization** | `app/services/normalize_parquet.py` | Convert importer JSON into parquet tables with deduplication. |
 | **3. Queries** | `app/services/queries.py` | Run analytical queries (spending, income, net worth). |
 
@@ -44,12 +44,13 @@ it's tracked and shared by every profile, never profile-scoped.
 
 ### 1. Import & Normalize Statements
 
-- Converts PDF or JSON statements into standardized **transaction + balance tables**.
+- Converts PDF statements into standardized **transaction + balance tables**. The demo builder can feed trusted, tracked importer JSON directly to the normalizer.
 - Handles **cash**, **credit**, **investment**, **line-of-credit**, and **asset-valuation** accounts differently:
   - Cash → single account per statement.
   - Credit → multiple cardholders, one combined parent account.
   - Investment → NAV-only accounts (no transactions).
-  - Line of credit / asset valuation (home, car) → balance- or NAV-style entries, no transactions.
+  - Line of credit → transactions plus a statement-reported liability balance.
+  - Asset valuation (home, car) → NAV-style entries, no transactions.
 - Ensures:
   - **Unique `transaction_id`** and **`source_statement_id`**.
   - Deduplication across re-ingested statements.
@@ -85,7 +86,7 @@ Served by `app/web/flask_ui.py` (the `web_ui` entry point — `make run` /
 - `/accounts` → Latest asset/liability balances.
 - `/transactions/view` → Transaction browser.
 - `/categories/manage` → Manage categories & seeds.
-- `/import` → Upload PDFs or JSONs for ingestion (preview, then commit).
+- `/import` → Upload PDFs for ingestion (preview, then commit).
 - `/settings` → View the active profile and configure thresholds/paths.
 - `/api/*` → JSON endpoints the pages above call (dashboard aggregates,
   transaction filters, category tree, import preview/commit/reject).

@@ -1,7 +1,7 @@
 # app/services/importers/base.py
 from __future__ import annotations
 from pathlib import Path
-from typing import Protocol, Literal, Dict, Any, List, Optional, TypedDict
+from typing import Protocol, Literal, List, Optional, TypedDict
 
 # --------------------------------------------------------------------
 # Account model (side + class)
@@ -11,16 +11,40 @@ from typing import Protocol, Literal, Dict, Any, List, Optional, TypedDict
 AccountSide = Literal["asset", "liability"]
 
 # Classes depend on the side
-AssetClass = Literal["cash", "investment", "home_fmv", "car_fmv", "other_fmv"]
-LiabilityClass = Literal["loan", "credit_card", "other_debt"]
+AssetClass = Literal[
+    "cash",
+    "investment",
+    "home_fmv",
+    "car_fmv",
+    "private_equity",
+    "insurance_fv",
+    "other_fmv",
+]
+LiabilityClass = Literal["loan", "loc", "credit_card", "other_debt"]
 
 # Union of all possible account classes
 AccountClass = AssetClass | LiabilityClass
+TransactionType = Literal["expense", "income", "transfer", "refund"]
 
 
 # --------------------------------------------------------------------
 # Canonical importer JSON schema (Python typing)
 # --------------------------------------------------------------------
+
+class DocumentSignature(TypedDict):
+    """Required document-identification block."""
+    document_type: str
+
+
+class AccountSummary(TypedDict):
+    """Fields required from every importer account summary."""
+    account_id: str
+    account_name: str
+    institution: str
+    account_side: AccountSide
+    account_class: AccountClass
+    base_currency: str
+
 
 class Transaction(TypedDict):
     """Normalized transaction structure."""
@@ -30,33 +54,49 @@ class Transaction(TypedDict):
     debit: float
     credit: float
     is_credit: bool
+    transaction_type: TransactionType
 
 
-class StatementSummary(TypedDict, total=False):
-    """Per-statement totals + validation results."""
+class NavSnapshot(TypedDict):
+    """One dated account valuation."""
+    date: str  # YYYY-MM-DD
+    nav: float
+
+
+class _StatementSummaryRequired(TypedDict):
+    validation_passed: bool
+    validation_message: str
+
+
+class StatementSummary(_StatementSummaryRequired, total=False):
+    """Required validation result plus optional per-statement totals."""
     opening_balance: Optional[float]
     closing_balance: Optional[float]
     total_debits: Optional[float]
     total_credits: Optional[float]
     net_amount: Optional[float]
     statement_subtotal: Optional[float]
-    validation_passed: bool
-    validation_message: str
 
 
-class CardholderInfo(TypedDict, total=False):
-    """Card/account identifying information."""
+class _CardholderInfoRequired(TypedDict):
     name: str
-    card_number: str
     card_digits: str
 
 
-class Statement(TypedDict):
-    """One account/cardholder statement."""
-    cardholder_info: CardholderInfo
+class CardholderInfo(_CardholderInfoRequired, total=False):
+    """Required cardholder identity plus an optional masked card number."""
+    card_number: str
+
+
+class _StatementRequired(TypedDict):
     summary: StatementSummary
-    regular_transactions: List[Transaction]
-    transfer_transactions: List[Transaction]
+    transactions: List[Transaction]
+
+
+class Statement(_StatementRequired, total=False):
+    """One transactional statement with optional account hierarchy metadata."""
+    cardholder_info: CardholderInfo
+    parent_account_id: str
 
 
 class Reconciliation(TypedDict, total=False):
@@ -69,26 +109,35 @@ class Reconciliation(TypedDict, total=False):
     credits_match: Optional[bool]
 
 
-class ImporterJson(TypedDict, total=False):
+class _ImporterJsonRequired(TypedDict):
+    export_date: str
+    document_signature: DocumentSignature
+    account_summary: AccountSummary
+
+
+class ImporterJson(_ImporterJsonRequired, total=False):
     """
     Canonical output for all importers.
 
     Required:
       - export_date (str)
       - document_signature (dict with document_type)
-      - statements (list of Statement)
+      - account_summary
+      - at least one of statements or nav_snapshots (enforced by schema.json)
 
     Optional:
-      - account_summary (dict)
       - total_cardholders (int)
+      - statements (list of Statement)
+      - nav_snapshots (list of NavSnapshot)
       - reconciliation (dict with declared/computed totals)
+      - top-level validation result emitted by current importers
     """
-    export_date: str
-    document_signature: Dict[str, Any]
-    account_summary: Dict[str, Any]
     total_cardholders: int
     statements: List[Statement]
+    nav_snapshots: List[NavSnapshot]
     reconciliation: Reconciliation
+    validation_passed: bool
+    validation_message: str
 
 
 # --------------------------------------------------------------------
@@ -103,10 +152,12 @@ class Importer(Protocol):
       - implement `parse_to_json(path)` returning ImporterJson
 
     JSON schema reference:
-      - top-level: export_date, document_signature, account_summary, statements
-      - each statement: cardholder_info, summary (with validation_passed/message),
-                        regular_transactions, transfer_transactions
-      - transactions: operation_date, description, amount, debit, credit, is_credit
+      - top-level: export_date, document_signature, account_summary, and either
+                   statements or nav_snapshots
+      - each statement: summary, transactions, and optional cardholder/account
+                        hierarchy metadata
+      - transactions: operation_date, description, amount, debit, credit,
+                      is_credit, transaction_type
     """
 
     key: str  # unique key, e.g. "credit.bmo_mastercard_fr"

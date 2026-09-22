@@ -2,13 +2,19 @@ import json
 import re
 from datetime import datetime
 from pathlib import Path
+from typing import get_args, get_type_hints
+
 import pytest
+
+from app import config
+from app.services.importers import base
 
 # ─────────────────────────────────────────────
 # Constants
 # ─────────────────────────────────────────────
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
+SCHEMA_PATH = Path(__file__).parents[2] / "app" / "services" / "importers" / "schema.json"
 
 ISO_CURRENCY_RE = re.compile(r"^[A-Z]{3}$")
 ISO_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -42,6 +48,46 @@ def _detect_importer_type(importer_json: dict) -> str:
         return "transactional"
     raise AssertionError(
         "Importer must define either nav_snapshots or statements"
+    )
+
+
+def _assert_typed_dict_matches_schema(typed_dict, schema_node: dict) -> None:
+    schema_required = frozenset(schema_node.get("required", []))
+    schema_properties = frozenset(schema_node.get("properties", {}))
+    typed_required = typed_dict.__required_keys__
+    typed_declared = typed_required | typed_dict.__optional_keys__
+
+    assert typed_required == schema_required
+    assert schema_properties <= typed_declared
+
+
+def test_python_account_type_contract_matches_runtime_config():
+    assert set(get_args(base.AccountSide)) == set(config.ACCOUNT_SIDES)
+    assert set(get_args(base.AssetClass)) == set(
+        config.ACCOUNT_CLASSES_BY_SIDE["asset"]
+    )
+    assert set(get_args(base.LiabilityClass)) == set(
+        config.ACCOUNT_CLASSES_BY_SIDE["liability"]
+    )
+
+
+def test_python_importer_types_match_json_schema():
+    schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+    definitions = schema["$defs"]
+
+    _assert_typed_dict_matches_schema(base.DocumentSignature, schema["properties"]["document_signature"])
+    _assert_typed_dict_matches_schema(base.AccountSummary, definitions["account_summary"])
+    _assert_typed_dict_matches_schema(base.Transaction, definitions["transaction"])
+    _assert_typed_dict_matches_schema(base.NavSnapshot, definitions["nav_snapshot"])
+    _assert_typed_dict_matches_schema(base.StatementSummary, definitions["statement_summary"])
+    _assert_typed_dict_matches_schema(base.CardholderInfo, definitions["cardholder_info"])
+    _assert_typed_dict_matches_schema(base.Statement, definitions["statement"])
+    _assert_typed_dict_matches_schema(base.Reconciliation, definitions["reconciliation"])
+    _assert_typed_dict_matches_schema(base.ImporterJson, schema)
+
+    transaction_type = get_type_hints(base.Transaction)["transaction_type"]
+    assert set(get_args(transaction_type)) == set(
+        definitions["transaction"]["properties"]["transaction_type"]["enum"]
     )
 
 # ─────────────────────────────────────────────

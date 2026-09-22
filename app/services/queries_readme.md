@@ -18,7 +18,7 @@ The key idea: importers and normalizers focus on _data ingestion_; `queries.py` 
 1. **Aggregate spending, income, and refunds** by various dimensions (category, institution, tag, month, cardholder, etc.).
 2. **Compute net worth** across assets and liabilities over time.
 3. **Merge manual, NAV, and transactional balances** for unified reporting.
-4. **Provide a consistent query API** for `/accounts`, `/transactions`, and dashboard components.
+4. **Provide a consistent query API** for `/accounts`, `/transactions/view`, and dashboard components.
 
 ---
 
@@ -78,7 +78,11 @@ The dispatcher:
 
 ## 💸 Spending & Income Queries
 
-The spending queries use SQL over a `base` CTE that ensures consistent normalization of dates (`op_date`) and description text (`description_norm`).
+The spending queries use SQL over the shared `_BASE_CTE`, which normalizes dates
+(`op_date`) and description text (`description_norm`) and joins resolved category
+flags. Spending queries use `_SPEND_WHERE`; income/expense cash-flow queries use
+`_CASH_FLOW_WHERE`. These centralized filters must not be reimplemented by
+individual queries or routes.
 
 ### Category-Level Queries
 - `total_spending_by_category()` → Aggregate spending per category.
@@ -178,14 +182,32 @@ Displays latest balance per account
 | Query Name | Description |
 |-------------|-------------|
 | `total_spending_by_category` | Total net spending by category |
+| `total_spending_by_category_subcategory` | Spending by category and subcategory |
+| `total_spending_by_category_subcategory_type` | Spending by the full category hierarchy |
 | `total_spending_by_tag` | Total net spending by tag |
+| `total_spending_by_tag_month` | Monthly spending by tag |
+| `total_spending_by_cardholder` | Spending by cardholder |
+| `total_spending_by_institution` | Spending by institution |
 | `total_spending_by_month` | Monthly outflow totals |
+| `spending_by_month_for_year` | Monthly spending for a selected year |
+| `spending_for_year_month` | Cardholder spending detail for one month |
+| `spending_by_currency` | Spending grouped by currency |
 | `transactions_by_cardholder` | All transactions grouped by cardholder |
 | `transactions_by_institution` | All transactions grouped by merchant/institution |
 | `all_transactions` | Unified transactional view including manual entries |
+| `all_transfers` | Transfer-only transaction view |
 | `net_worth_timeseries` | Monthly net worth timeseries |
+| `net_worth_by_liquidity_timeseries` | Net worth split by liquidity class |
+| `net_worth_by_asset_nature_timeseries` | Net worth split by asset nature |
+| `asset_matrix_latest_snapshot` | Latest asset matrix by nature and liquidity |
+| `asset_matrix_latest_snapshot_fx` | Display-currency asset matrix |
+| `liquid_financial_assets_timeseries` | Liquid financial assets over time |
+| `liquid_financial_assets_timeseries_fx` | Display-currency liquid assets over time |
+| `net_worth_timeseries_fx` | Display-currency net worth timeseries |
 | `net_worth_accounts_snapshot` | Latest account balances from all sources |
+| `net_worth_accounts_snapshot_fx` | Display-currency account snapshot |
 | `income_vs_expense_for_year` | Income vs expense breakdown per month |
+| `available_years` | Years represented in the transaction dataset |
 
 ---
 
@@ -202,4 +224,4 @@ Displays latest balance per account
 ### 🔖 TL;DR
 - **Importers** parse → **Normalizer** persists → **Queries** analyze.
 - All financial insights (spending, income, net worth) come through `queries.py`.
-- Lightweight, composable, and d
+- Lightweight, composable, and deterministic.

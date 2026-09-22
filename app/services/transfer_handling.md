@@ -25,7 +25,7 @@ Net worth changes **only when actual economic value changes**, not when value mo
 | **Cash → Investment (TFSA, RRSP, Margin)** | No | No | No | **Yes** | Contribution does *not* increase net worth; NAV change does. |
 | **Investment → Cash (Redemption / Withdrawal)** | No | No | No | **Yes** | Net worth changes only when NAV decreases. Withdrawal itself does not change NW. |
 | **Investment → Investment** | No | No | No | **Yes** | NAV changes determine value; transfer itself is neutral. |
-| **Refund (Merchant)** | No | **Yes** | **Yes** | No | True positive income; increases net worth. |
+| **Refund (Merchant)** | **Reduces spending** | No | **Yes** | No | Stored as `transaction_type = 'refund'`; offsets expense totals and therefore increases net worth. |
 | **Cashback / Rewards** | No | **Yes** | **Yes** | No | Income, increases net worth. |
 | **Interest on HELOC / Credit Card** | **Yes (expense)** | No | **Decreases NW** | No | Should be separated from principal payments. |
 | **Loan Principal Reduction** | No | No | No | No | Reduces liability and reduces assets; net effect is zero. |
@@ -36,4 +36,3 @@ Net worth changes **only when actual economic value changes**, not when value mo
 
 ### 1. Transfers between any two **asset** accounts
 (net worth = unchanged)
-

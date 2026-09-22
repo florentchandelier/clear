@@ -37,6 +37,8 @@ resolved separately (`sudo apt-get install ghostscript python3-tk` on
 Debian/Ubuntu) — it is only required for importing an actual bank PDF via
 `/import`, not for `make demo`.
 
-A second tier — synthetic *PDF* fixtures that exercise the real
-Camelot/pdfplumber parsing code end to end — is future work, not part of
-this directory; see the design plan's Milestone 4.
+Public synthetic *PDF* fixtures now exercise every registered importer's real
+PDF parsing path end to end. They deliberately live under
+`tests/importers/fixtures/pdf/`, not in this Tier 1 demo-seed directory. See
+[`tests/importers/fixtures/pdf/README.md`](../../tests/importers/fixtures/pdf/README.md)
+for the coverage matrix, regeneration procedure, and focused test commands.

@@ -109,7 +109,7 @@ Some merchants use a single description for transactions that belong to differen
 categories (e.g. a department store charging for food and for clothing). Seeds and
 corrections match on description alone — they cannot distinguish by amount, weekday,
 or account. For these cases, per-transaction (tx_id) correction via the transactions
-view is the only reliable approach. See priorities.md §0 for planned improvements.
+view is the only reliable approach with the current matching contract.
 
 ---
 
@@ -128,5 +128,5 @@ transactions with superficially similar descriptions across different merchants.
 `normalize_desc()` in Python and `_sql_normalize_desc()` in SQL must remain
 identical. If they diverge, corrections applied at categorization time will not
 match the SQL-side `description_norm` column used by `_BASE_CTE`, breaking
-correction lookup for queries. See `guardrails.md` module ownership for the
-change-impact rule.
+correction lookup for queries. Changes to either implementation must update the
+other and retain regression coverage for equivalent Python/SQL normalization.

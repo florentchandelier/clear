@@ -7,13 +7,16 @@ It standardizes, validates, and writes statement data into the correct meta and 
 
 ## 🧩 Purpose
 
-Importers extract structured JSON data from source documents (PDF, CSV, etc.).  
-`normalize_parquet.py` takes that JSON and **normalizes it into four canonical tables**:
+PDF importers extract structured JSON from source documents; the synthetic demo
+builder supplies trusted, tracked importer JSON directly.
+`normalize_parquet.py` converts transactional importer JSON into four DataFrames
+and persists those tables, plus a fifth NAV table for snapshot-only imports:
 
 1. **Transactions** → partitioned parquet files (`year=/month=/transactions.parquet`)
 2. **Meta (Statement Sources)** → `_meta/statement_sources.parquet`
 3. **Accounts** → `_meta/accounts.parquet`
 4. **Balances** → `_meta/account_balances.parquet`
+5. **NAV snapshots** → `_meta/nav_snapshots.parquet` (written directly from `nav_snapshots`)
 
 It ensures consistent schema, deduplication, and proper cross-referencing between accounts, cardholders, and balances.
 
@@ -41,7 +44,9 @@ Each importer output can represent one of several types of financial accounts:
 
 ### 2. Record Metadata
 
-Every ingested statement is uniquely identified by a **SHA-256 hash** of its file contents, stored in:
+Every ingested statement has a deterministic `source_statement_id` derived from
+its document type, statement anchor date, and file-content SHA-256. The full
+content checksum is stored separately in:
 
 ```
 _meta/statement_sources.parquet
@@ -67,7 +72,7 @@ This table includes:
 - `account_number`
 - `institution`
 - `account_side` (asset/liability)
-- `account_class` (chequing, credit_card, brokerage, etc.)
+- `account_class` (cash, credit_card, investment, loc, etc.)
 - `parent_account_id` (for multi-card credit statements)
 
 Parent accounts are automatically created for credit statements when a combined `account_summary.current_balance` is found.
@@ -88,7 +93,16 @@ All normalized transactions are partitioned by year/month for efficient querying
 year=2025/month=08/transactions.parquet
 ```
 
-Duplicate entries (matching `transaction_id`) are replaced on re-ingestion.
+The first occurrence of each transaction identity retains its legacy ID.
+Subsequent otherwise-identical rows receive deterministic IDs derived from the
+legacy ID plus an occurrence ordinal. Duplicate or missing IDs inside a
+normalization/write batch are rejected.
+
+An already imported statement is skipped unless the user explicitly confirms
+overwrite in the web import flow. Overwrite removes that statement's prior
+transaction rows before writing the replacement. After every transactional
+write, the ingester verifies that the persisted row count for the statement
+exactly matches the normalized row count.
 
 ### 6. Append NAV Snapshots
 
@@ -97,7 +111,8 @@ Investment importers can output `nav_snapshots`, which are appended to:
 _meta/nav_snapshots.parquet
 ```
 
-Each snapshot includes `account_id`, `nav_value`, `nav_date`, and source information.
+Each snapshot includes `account_id`, `operation_date`, `nav`, account metadata,
+and `source_file`.
 
 ---
 
@@ -123,10 +138,12 @@ PDF → Importer.parse_to_json() → normalize_parquet.ingest_pdf_with_importer_
 
 3. **`ingest_pdf_with_importer_json()` writes data:**
    - Calls helper functions to append transactions, metadata, accounts, and balances.
-   - Deduplicates by statement ID and transaction ID.
+   - Reconciles extracted rows with normalized unique IDs before any storage is created or mutated.
+   - Skips an existing statement unless explicit overwrite is requested.
+   - Rejects duplicate transaction IDs and verifies the persisted statement row count.
 
 4. **Query layer consumes parquet files:**
-   - The `queries.py` module merges these tables for UI display (`/accounts`, `/transactions`, etc.).
+   - The `queries.py` module merges these tables for UI display (`/accounts`, `/transactions/view`, etc.).
 
 ---
 
@@ -134,6 +151,11 @@ PDF → Importer.parse_to_json() → normalize_parquet.ingest_pdf_with_importer_
 
 ### `_file_sha256()` and `_stable16()`
 Ensure consistent and deterministic statement IDs based on file content and document metadata.
+
+### `_reconcile_transaction_batch()` and `_require_unique_transaction_ids()`
+Require the extracted transaction count to match the normalized count, require
+one unique non-empty ID per row, and fail the import before writing when those
+invariants do not hold.
 
 ### `_upsert_meta()` and `_upsert_accounts()`
 Safely merge new statement metadata and account definitions without losing previous entries.
@@ -151,11 +173,14 @@ Uses the `meta_balances` service to persist authoritative statement balances in 
 
 ## 🪄 Data Integrity Guarantees
 
-- **Deduplication:** Statements and transactions are idempotent (re-importing the same PDF doesn’t duplicate records).
+- **Deterministic identity:** The first transaction occurrence preserves its legacy ID; identical later occurrences receive deterministic ordinal-derived IDs.
+- **Fail-closed reconciliation:** Extracted and normalized transaction counts and unique IDs must agree before any write.
+- **Post-write verification:** The persisted row count must equal the normalized transaction count.
+- **Idempotency:** Re-importing the same PDF is skipped unless explicit overwrite is requested.
 - **Schema Stability:** Every parquet file written has a consistent set of columns.
 - **Referential Integrity:** Account IDs are consistent across transactions, balances, and NAVs.
 - **Parent Awareness:** Child cardholders link to parent accounts using `parent_account_id`.
-- **Traceability:** Each transaction, balance, or NAV record includes its originating `source_file` and `file_sha256`.
+- **Traceability:** Transactions carry `source_statement_id`; statement metadata carries `file_sha256` and the resolved source path; balances and NAV rows carry `source_file`.
 
 ---
 
@@ -218,4 +243,4 @@ normalize_parquet.ingest_pdf_with_importer_json()
 - **Importers extract → normalizer persists.**
 - Handles cash, credit, and investment types uniformly.
 - Ensures balance integrity, parent/child structure, and reproducible ingestion.
-- Feeds the `/accounts` and `/transactions` UIs with reliable parquet
+- Feeds the `/accounts` and `/transactions/view` UIs with reliable Parquet data.

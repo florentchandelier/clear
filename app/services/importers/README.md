@@ -1,11 +1,11 @@
 # 🧾 Importer Architecture — `app/services/importers/`
 
-The `importers` module is responsible for parsing raw financial statements (PDF, CSV, JSON, etc.) into structured data that can be normalized and stored in CLEAR's parquet dataset.
+The `importers` module is responsible for parsing PDF financial statements into structured data that can be normalized and stored in CLEAR's parquet dataset. The current public registry contains PDF importers only.
 
 Each importer class:
 - Targets a specific institution + account type.
 - Extracts transactions, balances, and metadata from statements.
-- Produces a JSON output conforming to the shared schema (`app/services/schema.json`).
+- Produces a JSON output conforming to the shared schema (`app/services/importers/schema.json`).
 - Delegates normalization and persistence to the ingestion pipeline (`normalize_parquet.py`).
 
 ---
@@ -20,9 +20,13 @@ The importers are organized by account type:
 |---------|---------------|----------|----------------|--------------------|
 | `cash/` | Everyday banking accounts (chequing, savings) | `bmo_chequing_fr.py` | Statement-reported end-of-period balance | PDF line-by-line transaction extraction |
 | `credit/` | Credit card accounts (possibly multiple cardholders) | `bmo_mastercard_fr.py` | Statement-level *“Solde dû / Solde total”* (aggregated) | Per-cardholder sub-statements |
-| `invest/` | Investment or brokerage accounts | `questrade_pdf.py` (for example) | NAV or portfolio snapshot | NAV entries (not transaction-based) |
+| `investment/` | Investment or brokerage accounts | `questrade_equity.py` | NAV or portfolio snapshot | NAV entries (not transaction-based) |
+| `loc/` | Lines of credit / HELOCs | `bmo_heloc_fr.py` | Statement-reported closing balance | PDF transaction extraction |
+| `asset/` | Home and vehicle valuations | `home_evaluation_fonciere.py` | Valuation snapshot | NAV-style valuation entry |
 
-All importers follow a **TemplateImporter** base pattern — defining detection, parsing, and validation methods.
+Every importer implements the `Importer` protocol. Importers with the common
+transactional shape may subclass `TemplateImporter`; specialized NAV and
+valuation importers implement the protocol directly.
 
 ---
 
@@ -204,7 +208,7 @@ To add a new importer for another institution or account type:
        key = "cash.mybank_chequing_en"
        label = "MyBank Chequing (EN) PDF"
        account_side = "asset"
-       account_class = "chequing"
+       account_class = "cash"
        input_kind = "pdf"
        signature_name = "MYBANK_CHEQUING_EN"
        institution_default = "MyBank"
@@ -219,18 +223,36 @@ To add a new importer for another institution or account type:
            ...
    ```
 
-3. **Validate output** using the shared schema:
+3. **Validate output** using the shared schema. Existing importers load
+   `schema.json` with `jsonschema`; contract tests also validate every
+   registered importer's output against it.
    ```python
-   from jsonschema import validate
-   validate(instance=output, schema=_SCHEMA)
+   import json
+   from pathlib import Path
+   import jsonschema
+
+   schema = json.loads(
+       Path("app/services/importers/schema.json").read_text(encoding="utf-8")
+   )
+   jsonschema.validate(instance=output, schema=schema)
    ```
 
-4. **Ingest into the system** with:
+4. **Register and test it:**
+   - Add the importer class to `app/services/importers/registry.py`.
+   - Add a deterministic invented PDF and reviewed expected JSON under
+     `tests/importers/fixtures/pdf/`.
+   - Extend the synthetic-PDF tests so detection, parsing, preview, commit,
+     persistence, offline execution, and deterministic regeneration are all
+     covered.
+
+5. **Use it through the normal import flow:**
    ```bash
-   python app/scripts/ingest_pdf.py --path /path/to/file.pdf --importer cash.mybank_chequing_en
+   make run
    ```
 
-This will handle normalization, parquet writes, and metadata updates automatically.
+Open `/import`, select the matching account type and importer, preview the PDF,
+then confirm the commit. CLEAR has no standalone statement-ingestion CLI;
+preview and commit through the web flow are the supported ingestion path.
 
 ---
 
@@ -239,4 +261,4 @@ This will handle normalization, parquet writes, and metadata updates automatical
 - **Cash accounts** → one account, one balance, many transactions.  
 - **Credit accounts** → many cardholders, one combined balance.  
 - **Investment accounts** → one account, many NAV values, no transactions.  
-- **Balances** → always prefer statement summaries f
+- **Balances** → statement summaries take priority over manual values, NAV snapshots, and transaction-derived balances.
