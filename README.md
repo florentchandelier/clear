@@ -234,6 +234,13 @@ Both live in `queries.py`.
 
 Every relevant query extends these definitions rather than reimplementing its own interpretation of spending or cash flow.
 
+Raw transactions retain their source-oriented signs. Dashboard spending
+aggregations use one presentation contract: `total_spent` is expenses minus
+refunds, normally a positive outflow magnitude. It remains negative when
+refunds exceed expenses. Income/expense results use positive income and the
+same net-expense convention, so net cash flow is `income - expense`. Routes and
+JavaScript render these values without changing their signs.
+
 ---
 
 ## Stable transaction IDs

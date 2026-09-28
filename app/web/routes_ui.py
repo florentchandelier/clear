@@ -200,7 +200,7 @@ def api_total_spending_by_category():
             return 0.0
 
     table = [{"name": r.get("category", "other"), "total_spent": _tot(r)} for r in rows]
-    table = sorted(table, key=lambda r: r["total_spent"], reverse=True)[:20]
+    table = sorted(table, key=lambda r: abs(r["total_spent"]), reverse=True)[:20]
 
     chart = {
         "labels": [r["name"] for r in table],
@@ -224,7 +224,7 @@ def api_total_spending_by_tag():
             return 0.0
 
     table = [{"name": r.get("tag", "other"), "total_spent": _tot(r)} for r in rows]
-    table = sorted(table, key=lambda r: r["total_spent"], reverse=True)[:20]
+    table = sorted(table, key=lambda r: abs(r["total_spent"]), reverse=True)[:20]
 
     chart = {
         "labels": [r["name"] for r in table],
@@ -279,15 +279,19 @@ def api_spending_stacked_by_category():
     df["sub_type_label"] = df.apply(lambda r: _combine_sub_type(r["subcategory"], r["type"]), axis=1)
 
     # ─────────────────────────────────────────────
-    # Compute total_spent and ensure positive magnitudes
+    # Preserve the query contract: positive means net spending and a negative
+    # value means refunds exceeded expenses for that group.
     # ─────────────────────────────────────────────
-    df["total_spent"] = df["total_spent"].astype(float).abs()
+    df["total_spent"] = df["total_spent"].astype(float)
 
     # ─────────────────────────────────────────────
-    # Compute share of each sub_type within its category
+    # Compute magnitude shares for ordering only; keep signed values in pivot.
     # ─────────────────────────────────────────────
-    df["category_total"] = df.groupby("category")["total_spent"].transform("sum")
-    df["share_within_cat"] = df["total_spent"] / df["category_total"]
+    df["spending_magnitude"] = df["total_spent"].abs()
+    df["category_magnitude"] = df.groupby("category")["spending_magnitude"].transform("sum")
+    df["share_within_cat"] = (
+        df["spending_magnitude"] / df["category_magnitude"].replace(0, 1)
+    )
 
     # Sort: largest share first within each category
     df = df.sort_values(["category", "share_within_cat"], ascending=[True, False])
@@ -346,9 +350,8 @@ def api_income_vs_expense_for_year():
     Returns monthly totals of income and expense (txn-only)
     for the 'Income vs Expense' chart.
 
-    Relies on a new query you’ll add to queries.py (see below).
-    Filters entry_txn = TRUE and groups by month.
-    Returns monthly totals of income (positive) and expense (negative).
+    Returns monthly income and net-expense magnitudes. Net expense may be
+    negative only when refunds exceed expenses.
     """
     parquet_path = _settings_parquet_path()
     year = _year_from_request(parquet_path)

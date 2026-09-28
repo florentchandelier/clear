@@ -15,12 +15,10 @@ async function renderIncomeExpenseChart(year) {
   const labels = data.map(r => r.month);
 
   const income = data.map(r => r.income);
-  // Signed expenses for math
-  const expenseSigned = data.map(r => r.expense);
-  // Absolute expenses for display only
-  const expenseDisplay = expenseSigned.map(v => Math.abs(v));
-  // Net = income + signed expense (expense is negative)
-  const net = income.map((v, i) => v + expenseSigned[i]);
+  // Queries already expose net-spending magnitudes: expenses minus refunds.
+  // A negative value is preserved when refunds exceed expenses.
+  const expense = data.map(r => r.expense);
+  const net = income.map((v, i) => v - expense[i]);
 
   if (incomeExpenseChart) incomeExpenseChart.destroy();
   incomeExpenseChart = new Chart(ctx, {
@@ -35,7 +33,7 @@ async function renderIncomeExpenseChart(year) {
           },
           {
             label: "Expense",
-            data: expenseDisplay,
+            data: expense,
             backgroundColor: "rgba(255, 99, 132, 0.7)",
           },
           {

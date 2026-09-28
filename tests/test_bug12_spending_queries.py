@@ -74,8 +74,8 @@ def test_total_spending_by_institution_groups_the_fallback_expression(tmp_path):
 
     assert list(result.columns) == ["institution", "total_spent", "abs_amount"]
     by_institution = result.set_index("institution")
-    assert float(by_institution.loc["Fallback Institution", "total_spent"]) == -100.0
-    assert float(by_institution.loc["Synthetic Bank", "total_spent"]) == -30.0
+    assert float(by_institution.loc["Fallback Institution", "total_spent"]) == 100.0
+    assert float(by_institution.loc["Synthetic Bank", "total_spent"]) == 30.0
 
 
 def test_total_spending_by_tag_month_ignores_the_hive_month_column(
@@ -138,7 +138,7 @@ def test_cardholder_queries_accept_an_all_null_parquet_column(tmp_path):
     )
 
     assert all_months.to_dict("records") == [
-        {"cardholder_name": "unknown", "total_spent": -130.0, "abs_amount": 130.0}
+        {"cardholder_name": "unknown", "total_spent": 130.0, "abs_amount": 130.0}
     ]
     assert one_month.to_dict("records") == [
         {"cardholder_name": "unknown", "total_spent": 130.0}

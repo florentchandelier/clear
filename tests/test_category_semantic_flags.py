@@ -110,9 +110,9 @@ def test_dashboard_spending_and_cashflow_on_mock_fixture_are_stable(
     assert spend_map["2025-08"] == pytest.approx(1875.29, abs=0.01)
     assert spend_map["2025-09"] == pytest.approx(308.65, abs=0.01)
 
-    assert cf_map["2025-07"] == pytest.approx((0.0, -1332.95), abs=0.01)
-    assert cf_map["2025-08"] == pytest.approx((7600.5, -1875.29), abs=0.01)
-    assert cf_map["2025-09"] == pytest.approx((250.0, -308.65), abs=0.01)
+    assert cf_map["2025-07"] == pytest.approx((0.0, 1332.95), abs=0.01)
+    assert cf_map["2025-08"] == pytest.approx((7600.5, 1875.29), abs=0.01)
+    assert cf_map["2025-09"] == pytest.approx((250.0, 308.65), abs=0.01)
 
 
 def test_json_declared_false_flag_not_covered_by_semantic_overrides_is_preserved(

@@ -73,9 +73,9 @@ def test_total_spending_by_category_respects_year_filter(tmp_path: Path):
     val_2025 = float(y2025.loc[y2025["category"] == "food_daily", "total_spent"].iloc[0])
     val_2026 = float(y2026.loc[y2026["category"] == "food_daily", "total_spent"].iloc[0])
 
-    assert all_val == -450.0
-    assert val_2025 == -100.0
-    assert val_2026 == -350.0
+    assert all_val == 350.0
+    assert val_2025 == 100.0
+    assert val_2026 == 250.0
 
 
 def test_total_spending_by_tag_respects_year_filter(tmp_path: Path, monkeypatch):
@@ -118,8 +118,8 @@ def test_total_spending_by_category_subtype_respects_year_filter(tmp_path: Path)
         & (y2026["type"] == "produce")
     )
 
-    assert float(y2025.loc[mask_2025, "total_spent"].iloc[0]) == -100.0
-    assert float(y2026.loc[mask_2026, "total_spent"].iloc[0]) == -350.0
+    assert float(y2025.loc[mask_2025, "total_spent"].iloc[0]) == 100.0
+    assert float(y2026.loc[mask_2026, "total_spent"].iloc[0]) == 250.0
 
 
 def _write_multi_currency_txn_parquet(root: Path) -> None:

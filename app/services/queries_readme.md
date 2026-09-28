@@ -84,6 +84,18 @@ flags. Spending queries use `_SPEND_WHERE`; income/expense cash-flow queries use
 `_CASH_FLOW_WHERE`. These centralized filters must not be reimplemented by
 individual queries or routes.
 
+All spending aggregations expose the same dashboard-facing contract:
+
+- Raw transaction `amount` values retain their source-oriented signs.
+- `total_spent` is `SUM(ABS(expense)) - SUM(ABS(refund))` after the relevant
+  semantic filter is applied.
+- A normal net outflow is positive; a refund surplus remains negative.
+- `abs_amount`, where returned, exists only for magnitude-based ordering.
+- `income_vs_expense_for_year` returns positive income and the same net-expense
+  value, making net cash flow `income - expense`.
+- Routes and JavaScript preserve returned values. They may use absolute
+  magnitude for ranking, but never replace a displayed value with its absolute.
+
 ### Category-Level Queries
 - `total_spending_by_category()` → Aggregate spending per category.
 - `total_spending_by_category_subcategory()` → Adds subcategory grouping.

@@ -226,6 +226,22 @@ _ALL_MAIN_WHERE = (
     "AND amount IS NOT NULL"
 )
 
+
+def _net_spending_sql(alias: str | None = None) -> str:
+    """Return the canonical dashboard spending expression.
+
+    Expenses contribute a positive magnitude and refunds reduce it. A negative
+    result is retained when refunds exceed expenses. The caller remains
+    responsible for applying _SPEND_WHERE or _CASH_FLOW_WHERE.
+    """
+    prefix = f"{alias}." if alias else ""
+    return (
+        f"SUM(CASE WHEN {prefix}transaction_type='expense' "
+        f"THEN ABS({prefix}amount) ELSE 0 END) - "
+        f"SUM(CASE WHEN {prefix}transaction_type='refund' "
+        f"THEN ABS({prefix}amount) ELSE 0 END)"
+    )
+
 # ============================================================
 # SECTION E — Tag helpers (pure, no SQL)
 # ============================================================
@@ -393,11 +409,12 @@ def total_spending_by_category(con, year: int | None = None):
     Totals by category for true spending only (exclude income).
     Refunds reduce totals.
     """
+    net_spending = _net_spending_sql()
     return con.execute(_BASE_CTE + f"""
         SELECT
             COALESCE(category,'uncategorized') AS category,
-            SUM(amount) AS total_spent,
-            ABS(SUM(amount)) AS abs_amount
+            {net_spending} AS total_spent,
+            ABS({net_spending}) AS abs_amount
         FROM base
         WHERE {_SPEND_WHERE}
         {_year_filter_sql(year)}
@@ -410,12 +427,13 @@ def total_spending_by_category_subcategory(con, year: int | None = None):
     """
     Totals by category/subcategory for spending only (exclude income).
     """
+    net_spending = _net_spending_sql()
     return con.execute(_BASE_CTE + f"""
         SELECT
             COALESCE(category,'uncategorized') AS category,
             COALESCE(subcategory,'__default__') AS subcategory,
-            SUM(amount) AS total_spent,
-            ABS(SUM(amount)) AS abs_amount
+            {net_spending} AS total_spent,
+            ABS({net_spending}) AS abs_amount
         FROM base
         WHERE {_SPEND_WHERE}
         {_year_filter_sql(year)}
@@ -425,13 +443,14 @@ def total_spending_by_category_subcategory(con, year: int | None = None):
 
 
 def total_spending_by_category_subcategory_type(con, year: int | None = None):
+    net_spending = _net_spending_sql()
     return con.execute(_BASE_CTE + f"""
         SELECT
             COALESCE(category,'uncategorized') AS category,
             COALESCE(subcategory,'__default__') AS subcategory,
             COALESCE("type",'__default__') AS "type",
-            SUM(amount) AS total_spent,
-            ABS(SUM(amount)) AS abs_amount
+            {net_spending} AS total_spent,
+            ABS({net_spending}) AS abs_amount
         FROM base
         WHERE {_SPEND_WHERE}
         {_year_filter_sql(year)}
@@ -441,11 +460,12 @@ def total_spending_by_category_subcategory_type(con, year: int | None = None):
 
 
 def total_spending_by_cardholder(con):
+    net_spending = _net_spending_sql()
     return con.execute(_BASE_CTE + f"""
         SELECT
             COALESCE(CAST(base.cardholder_name AS VARCHAR), 'unknown') AS cardholder_name,
-            SUM(amount) AS total_spent,
-            ABS(SUM(amount)) AS abs_amount
+            {net_spending} AS total_spent,
+            ABS({net_spending}) AS abs_amount
         FROM base
         WHERE {_SPEND_WHERE}
         GROUP BY COALESCE(CAST(base.cardholder_name AS VARCHAR), 'unknown')
@@ -454,11 +474,12 @@ def total_spending_by_cardholder(con):
 
 
 def total_spending_by_institution(con):
+    net_spending = _net_spending_sql()
     return con.execute(_BASE_CTE + f"""
         SELECT
             COALESCE(base.institution, base.description, 'unknown') AS institution,
-            SUM(amount) AS total_spent,
-            ABS(SUM(amount)) AS abs_amount
+            {net_spending} AS total_spent,
+            ABS({net_spending}) AS abs_amount
         FROM base
         WHERE {_SPEND_WHERE}
         GROUP BY COALESCE(base.institution, base.description, 'unknown')
@@ -467,11 +488,11 @@ def total_spending_by_institution(con):
 
 
 def total_spending_by_month(con):
+    net_spending = _net_spending_sql()
     return con.execute(_BASE_CTE + f"""
         SELECT
             STRFTIME('%Y-%m', op_date) AS month,
-            SUM(CASE WHEN transaction_type='expense' THEN ABS(amount) ELSE 0 END) -
-            SUM(CASE WHEN transaction_type='refund' THEN ABS(amount) ELSE 0 END) AS total_spent
+            {net_spending} AS total_spent
         FROM base
         WHERE {_SPEND_WHERE}
         GROUP BY STRFTIME('%Y-%m', op_date)
@@ -484,13 +505,13 @@ def total_spending_by_tag(con, year: int | None = None):
     if tagdf.empty:
         return pd.DataFrame(columns=["tag", "total_spent", "abs_amount"])
     _register_df(con, "tagmap", tagdf)
+    net_spending = _net_spending_sql("base")
 
     return con.execute(_BASE_CTE + f"""
         SELECT
           tm.tag AS tag,
-          SUM(CASE WHEN base.transaction_type='expense' THEN ABS(base.amount) ELSE 0 END) -
-          SUM(CASE WHEN base.transaction_type='refund' THEN ABS(base.amount) ELSE 0 END) AS total_spent,
-          SUM(ABS(base.amount)) AS abs_amount
+          {net_spending} AS total_spent,
+          ABS({net_spending}) AS abs_amount
         FROM base
         JOIN tagmap tm
           ON lower(base.category) = tm.category
@@ -508,13 +529,13 @@ def total_spending_by_tag_month(con):
     if tagdf.empty:
         return pd.DataFrame(columns=["month", "tag", "total_spent"])
     _register_df(con, "tagmap", tagdf)
+    net_spending = _net_spending_sql("base")
 
     return con.execute(_BASE_CTE + f"""
         SELECT
           STRFTIME('%Y-%m', op_date) AS month,
           tm.tag AS tag,
-          SUM(CASE WHEN transaction_type='expense' THEN ABS(amount) ELSE 0 END) -
-          SUM(CASE WHEN transaction_type='refund' THEN ABS(amount) ELSE 0 END) AS total_spent
+          {net_spending} AS total_spent
         FROM base
         JOIN tagmap tm
           ON lower(base.category) = tm.category
@@ -535,11 +556,11 @@ def spending_by_month_for_year(con, year: int | None):
         return pd.DataFrame(columns=["month", "total_spent"])
 
     y = int(year)
+    net_spending = _net_spending_sql()
     return con.execute(_BASE_CTE + f"""
         SELECT
           STRFTIME('%Y-%m', op_date) AS month,
-          SUM(CASE WHEN transaction_type='expense' THEN ABS(amount) ELSE 0 END) -
-          SUM(CASE WHEN transaction_type='refund' THEN ABS(amount) ELSE 0 END) AS total_spent
+          {net_spending} AS total_spent
         FROM base
         WHERE {_SPEND_WHERE}
           AND STRFTIME('%Y', op_date) = '{y:04d}'
@@ -550,11 +571,11 @@ def spending_by_month_for_year(con, year: int | None):
 
 def spending_for_year_month(con, year: int, month: int):
     ym = f"{int(year):04d}-{int(month):02d}"
+    net_spending = _net_spending_sql()
     return con.execute(_BASE_CTE + f"""
         SELECT
           COALESCE(CAST(base.cardholder_name AS VARCHAR), 'unknown') AS cardholder_name,
-          SUM(CASE WHEN transaction_type='expense' THEN ABS(amount) ELSE 0 END) -
-          SUM(CASE WHEN transaction_type='refund' THEN ABS(amount) ELSE 0 END) AS total_spent
+          {net_spending} AS total_spent
         FROM base
         WHERE {_SPEND_WHERE}
           AND STRFTIME('%Y-%m', op_date) = '{ym}'
@@ -564,11 +585,11 @@ def spending_for_year_month(con, year: int, month: int):
 
 
 def spending_by_currency(con):
+    net_spending = _net_spending_sql()
     return con.execute(_BASE_CTE + f"""
         SELECT
           COALESCE(currency,'CAD') AS currency,
-          SUM(CASE WHEN transaction_type='expense' THEN ABS(amount) ELSE 0 END) -
-          SUM(CASE WHEN transaction_type='refund' THEN ABS(amount) ELSE 0 END) AS total_spent
+          {net_spending} AS total_spent
         FROM base
         WHERE {_SPEND_WHERE}
         GROUP BY currency
@@ -578,24 +599,19 @@ def spending_by_currency(con):
 
 def income_vs_expense_for_year(con, year: int):
     y = int(year)
+    net_spending = _net_spending_sql()
     return con.execute(_BASE_CTE + f"""
         SELECT
             STRFTIME('%Y-%m', op_date) AS month,
 
             SUM(
                 CASE WHEN transaction_type = 'income'
-                     THEN amount
+                     THEN ABS(amount)
                      ELSE 0
                 END
             ) AS income,
 
-            SUM(
-                CASE
-                    WHEN transaction_type IN ('expense','refund')
-                    THEN amount
-                    ELSE 0
-                END
-            ) AS expense
+            {net_spending} AS expense
 
         FROM base
         WHERE {_CASH_FLOW_WHERE}
