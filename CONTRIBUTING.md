@@ -26,10 +26,11 @@ authority to contribute under the CLA.
 make install   # creates venv/, installs runtime + dev dependencies
 make demo      # populates the synthetic demo profile
 make test      # full suite
+make lint      # Ruff checks
 ```
 
 `make install` installs `requirements.txt` (runtime) and
-`requirements-dev.txt` (currently just `pytest`). `requirements.txt`
+`requirements-dev.txt` (`pytest` and `ruff`). `requirements.txt`
 includes `camelot-py`, which needs a system package
 (`ghostscript` — `sudo apt-get install ghostscript python3-tk` on
 Debian/Ubuntu) to actually parse a real PDF. You do **not** need it for
@@ -45,8 +46,13 @@ actual statement, or the synthetic-PDF importer tests under
 make test              # everything
 make test-fast         # skip slow-marked tests
 make test-importers    # importer contract tests only
+make lint              # Ruff checks
 venv/bin/pytest tests/test_queries.py -k spending   # one file / one -k filter
 ```
+
+Ruff is configured in `ruff.toml` as a focused correctness gate
+(`E9`, `F63`, `F7`, and `F82`). Broader code cleanup is intentionally
+outside the required check.
 
 Tests never require real financial data. If you're adding a test that
 needs a populated dataset, use the demo profile

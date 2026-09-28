@@ -5,3 +5,4 @@
 # make test` flow works from a genuinely fresh checkout.
 
 pytest>=8.0
+ruff>=0.8

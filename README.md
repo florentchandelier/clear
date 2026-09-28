@@ -84,7 +84,7 @@ Demo data and personal data are also deliberately separated so you can explore t
 git clone <this-repo-url>
 cd clear
 
-make install   # creates venv/, installs runtime + test dependencies
+make install   # creates venv/, installs runtime + development dependencies
 make demo      # builds a synthetic demo profile — no real data needed
 make run       # starts the web UI at http://127.0.0.1:5000
 ```
@@ -106,6 +106,7 @@ Or use:
 ```bash
 make test-fast       # skip slow markers
 make test-importers  # run importer contract tests only
+make lint            # run Ruff checks
 ```
 
 ---

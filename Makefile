@@ -2,7 +2,7 @@
 # Project Makefile
 # ─────────────────────────────────────────────────────────────
 
-.PHONY: help install demo run test test-importers test-fast clean
+.PHONY: help install demo run test test-importers test-fast lint clean
 
 # Default target
 help:
@@ -16,6 +16,7 @@ help:
 	@echo "  make test            Run all tests"
 	@echo "  make test-importers  Run importer contract tests only"
 	@echo "  make test-fast       Run tests without slow markers"
+	@echo "  make lint            Run Ruff checks"
 	@echo "  make clean           Remove caches and temporary files"
 	@echo ""
 
@@ -55,6 +56,9 @@ test-importers:
 
 test-fast:
 	venv/bin/pytest tests -m "not slow"
+
+lint:
+	venv/bin/ruff check .
 
 # ─────────────────────────────────────────────
 # Cleanup

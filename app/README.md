@@ -289,7 +289,7 @@ Flask /accounts page displays unified balances
 ## 🧰 Requirements
 
 See [`requirements.txt`](../requirements.txt) (runtime) and
-[`requirements-dev.txt`](../requirements-dev.txt) (adds `pytest`) —
+[`requirements-dev.txt`](../requirements-dev.txt) (adds `pytest` and `ruff`) —
 `make install` installs both. No minimum Python version is declared or
 enforced anywhere in the repo; this project's own `venv/` is built with
 Python 3.12. Real PDF parsing (`camelot-py`) additionally needs the
