@@ -2003,6 +2003,9 @@ def run_query(name: str, parquet_path: str, **kwargs) -> pd.DataFrame:
 
         if name == "net_worth_timeseries":
             return net_worth_timeseries(con, parquet_root)
+        if name == "net_worth_timeseries_fx":
+            df, _diagnostics = net_worth_timeseries_fx(con, parquet_root)
+            return df
         if name == "net_worth_by_liquidity_timeseries":
             return net_worth_by_liquidity_timeseries(con, parquet_root)
         if name == "net_worth_by_asset_nature_timeseries":
